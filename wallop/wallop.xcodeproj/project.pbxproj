@@ -1,0 +1,467 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FBC2C7141960C4AF00E8436B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C7131960C4AF00E8436B /* Foundation.framework */; };
+		FBC2C7161960C4AF00E8436B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C7151960C4AF00E8436B /* CoreGraphics.framework */; };
+		FBC2C7181960C4AF00E8436B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C7171960C4AF00E8436B /* UIKit.framework */; };
+		FBC2C71E1960C4AF00E8436B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FBC2C71C1960C4AF00E8436B /* InfoPlist.strings */; };
+		FBC2C7201960C4AF00E8436B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C71F1960C4AF00E8436B /* main.m */; };
+		FBC2C7241960C4AF00E8436B /* MFAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C7231960C4AF00E8436B /* MFAppDelegate.m */; };
+		FBC2C7261960C4AF00E8436B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBC2C7251960C4AF00E8436B /* Images.xcassets */; };
+		FBC2C72D1960C4AF00E8436B /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C72C1960C4AF00E8436B /* XCTest.framework */; };
+		FBC2C72E1960C4AF00E8436B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C7131960C4AF00E8436B /* Foundation.framework */; };
+		FBC2C72F1960C4AF00E8436B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C7171960C4AF00E8436B /* UIKit.framework */; };
+		FBC2C7371960C4AF00E8436B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FBC2C7351960C4AF00E8436B /* InfoPlist.strings */; };
+		FBC2C7391960C4AF00E8436B /* wallopTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C7381960C4AF00E8436B /* wallopTests.m */; };
+		FBC2C7441960C4EC00E8436B /* MFPrimaryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C7431960C4EC00E8436B /* MFPrimaryViewController.m */; };
+		FBC2C7471960C9C000E8436B /* MFImageCapturer.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C7461960C9C000E8436B /* MFImageCapturer.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FBC2C7301960C4AF00E8436B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBC2C7081960C4AF00E8436B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FBC2C70F1960C4AF00E8436B;
+			remoteInfo = wallop;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		FBC2C7101960C4AF00E8436B /* wallop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wallop.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBC2C7131960C4AF00E8436B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FBC2C7151960C4AF00E8436B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		FBC2C7171960C4AF00E8436B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		FBC2C71B1960C4AF00E8436B /* wallop-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "wallop-Info.plist"; sourceTree = "<group>"; };
+		FBC2C71D1960C4AF00E8436B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FBC2C71F1960C4AF00E8436B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FBC2C7211960C4AF00E8436B /* wallop-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "wallop-Prefix.pch"; sourceTree = "<group>"; };
+		FBC2C7221960C4AF00E8436B /* MFAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MFAppDelegate.h; sourceTree = "<group>"; };
+		FBC2C7231960C4AF00E8436B /* MFAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MFAppDelegate.m; sourceTree = "<group>"; };
+		FBC2C7251960C4AF00E8436B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		FBC2C72B1960C4AF00E8436B /* wallopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = wallopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBC2C72C1960C4AF00E8436B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		FBC2C7341960C4AF00E8436B /* wallopTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "wallopTests-Info.plist"; sourceTree = "<group>"; };
+		FBC2C7361960C4AF00E8436B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FBC2C7381960C4AF00E8436B /* wallopTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = wallopTests.m; sourceTree = "<group>"; };
+		FBC2C7421960C4EC00E8436B /* MFPrimaryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MFPrimaryViewController.h; sourceTree = "<group>"; };
+		FBC2C7431960C4EC00E8436B /* MFPrimaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MFPrimaryViewController.m; sourceTree = "<group>"; };
+		FBC2C7451960C9C000E8436B /* MFImageCapturer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MFImageCapturer.h; sourceTree = "<group>"; };
+		FBC2C7461960C9C000E8436B /* MFImageCapturer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MFImageCapturer.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FBC2C70D1960C4AF00E8436B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBC2C7161960C4AF00E8436B /* CoreGraphics.framework in Frameworks */,
+				FBC2C7181960C4AF00E8436B /* UIKit.framework in Frameworks */,
+				FBC2C7141960C4AF00E8436B /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FBC2C7281960C4AF00E8436B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBC2C72D1960C4AF00E8436B /* XCTest.framework in Frameworks */,
+				FBC2C72F1960C4AF00E8436B /* UIKit.framework in Frameworks */,
+				FBC2C72E1960C4AF00E8436B /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FBC2C7071960C4AF00E8436B = {
+			isa = PBXGroup;
+			children = (
+				FBC2C7191960C4AF00E8436B /* wallop */,
+				FBC2C7321960C4AF00E8436B /* wallopTests */,
+				FBC2C7121960C4AF00E8436B /* Frameworks */,
+				FBC2C7111960C4AF00E8436B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FBC2C7111960C4AF00E8436B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FBC2C7101960C4AF00E8436B /* wallop.app */,
+				FBC2C72B1960C4AF00E8436B /* wallopTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FBC2C7121960C4AF00E8436B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FBC2C7131960C4AF00E8436B /* Foundation.framework */,
+				FBC2C7151960C4AF00E8436B /* CoreGraphics.framework */,
+				FBC2C7171960C4AF00E8436B /* UIKit.framework */,
+				FBC2C72C1960C4AF00E8436B /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FBC2C7191960C4AF00E8436B /* wallop */ = {
+			isa = PBXGroup;
+			children = (
+				FBC2C7221960C4AF00E8436B /* MFAppDelegate.h */,
+				FBC2C7231960C4AF00E8436B /* MFAppDelegate.m */,
+				FBC2C7421960C4EC00E8436B /* MFPrimaryViewController.h */,
+				FBC2C7431960C4EC00E8436B /* MFPrimaryViewController.m */,
+				FBC2C7451960C9C000E8436B /* MFImageCapturer.h */,
+				FBC2C7461960C9C000E8436B /* MFImageCapturer.m */,
+				FBC2C7251960C4AF00E8436B /* Images.xcassets */,
+				FBC2C71A1960C4AF00E8436B /* Supporting Files */,
+			);
+			path = wallop;
+			sourceTree = "<group>";
+		};
+		FBC2C71A1960C4AF00E8436B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FBC2C71B1960C4AF00E8436B /* wallop-Info.plist */,
+				FBC2C71C1960C4AF00E8436B /* InfoPlist.strings */,
+				FBC2C71F1960C4AF00E8436B /* main.m */,
+				FBC2C7211960C4AF00E8436B /* wallop-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FBC2C7321960C4AF00E8436B /* wallopTests */ = {
+			isa = PBXGroup;
+			children = (
+				FBC2C7381960C4AF00E8436B /* wallopTests.m */,
+				FBC2C7331960C4AF00E8436B /* Supporting Files */,
+			);
+			path = wallopTests;
+			sourceTree = "<group>";
+		};
+		FBC2C7331960C4AF00E8436B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FBC2C7341960C4AF00E8436B /* wallopTests-Info.plist */,
+				FBC2C7351960C4AF00E8436B /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FBC2C70F1960C4AF00E8436B /* wallop */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FBC2C73C1960C4AF00E8436B /* Build configuration list for PBXNativeTarget "wallop" */;
+			buildPhases = (
+				FBC2C70C1960C4AF00E8436B /* Sources */,
+				FBC2C70D1960C4AF00E8436B /* Frameworks */,
+				FBC2C70E1960C4AF00E8436B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = wallop;
+			productName = wallop;
+			productReference = FBC2C7101960C4AF00E8436B /* wallop.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FBC2C72A1960C4AF00E8436B /* wallopTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FBC2C73F1960C4AF00E8436B /* Build configuration list for PBXNativeTarget "wallopTests" */;
+			buildPhases = (
+				FBC2C7271960C4AF00E8436B /* Sources */,
+				FBC2C7281960C4AF00E8436B /* Frameworks */,
+				FBC2C7291960C4AF00E8436B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FBC2C7311960C4AF00E8436B /* PBXTargetDependency */,
+			);
+			name = wallopTests;
+			productName = wallopTests;
+			productReference = FBC2C72B1960C4AF00E8436B /* wallopTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FBC2C7081960C4AF00E8436B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = MF;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Miller's Fantasy";
+				TargetAttributes = {
+					FBC2C72A1960C4AF00E8436B = {
+						TestTargetID = FBC2C70F1960C4AF00E8436B;
+					};
+				};
+			};
+			buildConfigurationList = FBC2C70B1960C4AF00E8436B /* Build configuration list for PBXProject "wallop" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FBC2C7071960C4AF00E8436B;
+			productRefGroup = FBC2C7111960C4AF00E8436B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FBC2C70F1960C4AF00E8436B /* wallop */,
+				FBC2C72A1960C4AF00E8436B /* wallopTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FBC2C70E1960C4AF00E8436B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBC2C71E1960C4AF00E8436B /* InfoPlist.strings in Resources */,
+				FBC2C7261960C4AF00E8436B /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FBC2C7291960C4AF00E8436B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBC2C7371960C4AF00E8436B /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FBC2C70C1960C4AF00E8436B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBC2C7471960C9C000E8436B /* MFImageCapturer.m in Sources */,
+				FBC2C7201960C4AF00E8436B /* main.m in Sources */,
+				FBC2C7241960C4AF00E8436B /* MFAppDelegate.m in Sources */,
+				FBC2C7441960C4EC00E8436B /* MFPrimaryViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FBC2C7271960C4AF00E8436B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBC2C7391960C4AF00E8436B /* wallopTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FBC2C7311960C4AF00E8436B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FBC2C70F1960C4AF00E8436B /* wallop */;
+			targetProxy = FBC2C7301960C4AF00E8436B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FBC2C71C1960C4AF00E8436B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FBC2C71D1960C4AF00E8436B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FBC2C7351960C4AF00E8436B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FBC2C7361960C4AF00E8436B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FBC2C73A1960C4AF00E8436B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FBC2C73B1960C4AF00E8436B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FBC2C73D1960C4AF00E8436B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "wallop/wallop-Prefix.pch";
+				INFOPLIST_FILE = "wallop/wallop-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FBC2C73E1960C4AF00E8436B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "wallop/wallop-Prefix.pch";
+				INFOPLIST_FILE = "wallop/wallop-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		FBC2C7401960C4AF00E8436B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/wallop.app/wallop";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "wallop/wallop-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "wallopTests/wallopTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		FBC2C7411960C4AF00E8436B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/wallop.app/wallop";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "wallop/wallop-Prefix.pch";
+				INFOPLIST_FILE = "wallopTests/wallopTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FBC2C70B1960C4AF00E8436B /* Build configuration list for PBXProject "wallop" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FBC2C73A1960C4AF00E8436B /* Debug */,
+				FBC2C73B1960C4AF00E8436B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FBC2C73C1960C4AF00E8436B /* Build configuration list for PBXNativeTarget "wallop" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FBC2C73D1960C4AF00E8436B /* Debug */,
+				FBC2C73E1960C4AF00E8436B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		FBC2C73F1960C4AF00E8436B /* Build configuration list for PBXNativeTarget "wallopTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FBC2C7401960C4AF00E8436B /* Debug */,
+				FBC2C7411960C4AF00E8436B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FBC2C7081960C4AF00E8436B /* Project object */;
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>C94DD647-7A0B-4A44-B9B1-CB821E2B488F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>wallop</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>A613B22C-188D-489C-8EBF-8FD80428432E</key>
+		<string>https://github.com/kevin-roark/mirrors.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>wallop/wallop.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>A613B22C-188D-489C-8EBF-8FD80428432E</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/kevin-roark/mirrors.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>A613B22C-188D-489C-8EBF-8FD80428432E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>A613B22C-188D-489C-8EBF-8FD80428432E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>mirrors</string>
+		</dict>
+	</array>
+</dict>
+</plist>
