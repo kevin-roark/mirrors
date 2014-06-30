@@ -10,6 +10,7 @@
 #import "MFImageCapturer.h"
 #import "MFAudioCapturer.h"
 
+#define ARC4RANDOM_MAX 0x100000000
 #define ACTIVE_IMAGES 25
 
 @interface MFPrimaryViewController ()<MFImageCapturerDelegate>
@@ -82,6 +83,11 @@
         [deadImageView removeFromSuperview];
         [self.imageViews removeObjectAtIndex:0];
     }
+    
+    double val = ((double) arc4random() / ARC4RANDOM_MAX);
+    if (val > 0.7) {
+        [self.imageCapturer swapCameras];
+    }
 }
 
 - (CGRect)imageFrameForImage:(UIImage *)image
@@ -97,7 +103,8 @@
 
 - (CGFloat)imageAlpha
 {
-    return 0.9;
+    double val = ((double) arc4random() / ARC4RANDOM_MAX);
+    return 0.5 * val + 0.5;
 }
 
 @end
