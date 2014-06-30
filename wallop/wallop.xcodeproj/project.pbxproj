@@ -21,6 +21,15 @@
 		FBC2C7391960C4AF00E8436B /* wallopTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C7381960C4AF00E8436B /* wallopTests.m */; };
 		FBC2C7441960C4EC00E8436B /* MFPrimaryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C7431960C4EC00E8436B /* MFPrimaryViewController.m */; };
 		FBC2C7471960C9C000E8436B /* MFImageCapturer.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C7461960C9C000E8436B /* MFImageCapturer.m */; };
+		FBC2C74A196109BC00E8436B /* MFAudioCapturer.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C749196109BC00E8436B /* MFAudioCapturer.mm */; };
+		FBC2C75419610D8E00E8436B /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C74D19610D8E00E8436B /* AudioFileReader.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		FBC2C75519610D8E00E8436B /* AudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C74F19610D8E00E8436B /* AudioFileWriter.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		FBC2C75619610D8E00E8436B /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C75119610D8E00E8436B /* Novocaine.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		FBC2C75719610D8E00E8436B /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBC2C75319610D8E00E8436B /* RingBuffer.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		FBC2C7591961119900E8436B /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C7581961119900E8436B /* Accelerate.framework */; };
+		FBC2C75B196111A000E8436B /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C75A196111A000E8436B /* CoreAudio.framework */; };
+		FBC2C75D196111AB00E8436B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C75C196111AB00E8436B /* AudioToolbox.framework */; };
+		FBC2C75F1961269F00E8436B /* photoShutter2.caf in Resources */ = {isa = PBXBuildFile; fileRef = FBC2C75E1961269F00E8436B /* photoShutter2.caf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +63,20 @@
 		FBC2C7431960C4EC00E8436B /* MFPrimaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MFPrimaryViewController.m; sourceTree = "<group>"; };
 		FBC2C7451960C9C000E8436B /* MFImageCapturer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MFImageCapturer.h; sourceTree = "<group>"; };
 		FBC2C7461960C9C000E8436B /* MFImageCapturer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MFImageCapturer.m; sourceTree = "<group>"; };
+		FBC2C748196109BC00E8436B /* MFAudioCapturer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MFAudioCapturer.h; sourceTree = "<group>"; };
+		FBC2C749196109BC00E8436B /* MFAudioCapturer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MFAudioCapturer.mm; sourceTree = "<group>"; };
+		FBC2C74C19610D8E00E8436B /* AudioFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioFileReader.h; path = Novacaine/AudioFileReader.h; sourceTree = "<group>"; };
+		FBC2C74D19610D8E00E8436B /* AudioFileReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AudioFileReader.mm; path = Novacaine/AudioFileReader.mm; sourceTree = "<group>"; };
+		FBC2C74E19610D8E00E8436B /* AudioFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioFileWriter.h; path = Novacaine/AudioFileWriter.h; sourceTree = "<group>"; };
+		FBC2C74F19610D8E00E8436B /* AudioFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioFileWriter.m; path = Novacaine/AudioFileWriter.m; sourceTree = "<group>"; };
+		FBC2C75019610D8E00E8436B /* Novocaine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Novocaine.h; path = Novacaine/Novocaine.h; sourceTree = "<group>"; };
+		FBC2C75119610D8E00E8436B /* Novocaine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Novocaine.m; path = Novacaine/Novocaine.m; sourceTree = "<group>"; };
+		FBC2C75219610D8E00E8436B /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RingBuffer.h; path = Novacaine/RingBuffer.h; sourceTree = "<group>"; };
+		FBC2C75319610D8E00E8436B /* RingBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = RingBuffer.mm; path = Novacaine/RingBuffer.mm; sourceTree = "<group>"; };
+		FBC2C7581961119900E8436B /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		FBC2C75A196111A000E8436B /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		FBC2C75C196111AB00E8436B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		FBC2C75E1961269F00E8436B /* photoShutter2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = photoShutter2.caf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +84,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBC2C75D196111AB00E8436B /* AudioToolbox.framework in Frameworks */,
+				FBC2C75B196111A000E8436B /* CoreAudio.framework in Frameworks */,
+				FBC2C7591961119900E8436B /* Accelerate.framework in Frameworks */,
 				FBC2C7161960C4AF00E8436B /* CoreGraphics.framework in Frameworks */,
 				FBC2C7181960C4AF00E8436B /* UIKit.framework in Frameworks */,
 				FBC2C7141960C4AF00E8436B /* Foundation.framework in Frameworks */,
@@ -102,6 +128,9 @@
 		FBC2C7121960C4AF00E8436B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FBC2C75C196111AB00E8436B /* AudioToolbox.framework */,
+				FBC2C75A196111A000E8436B /* CoreAudio.framework */,
+				FBC2C7581961119900E8436B /* Accelerate.framework */,
 				FBC2C7131960C4AF00E8436B /* Foundation.framework */,
 				FBC2C7151960C4AF00E8436B /* CoreGraphics.framework */,
 				FBC2C7171960C4AF00E8436B /* UIKit.framework */,
@@ -113,12 +142,16 @@
 		FBC2C7191960C4AF00E8436B /* wallop */ = {
 			isa = PBXGroup;
 			children = (
+				FBC2C75E1961269F00E8436B /* photoShutter2.caf */,
+				FBC2C74B19610D0800E8436B /* Novocaine */,
 				FBC2C7221960C4AF00E8436B /* MFAppDelegate.h */,
 				FBC2C7231960C4AF00E8436B /* MFAppDelegate.m */,
 				FBC2C7421960C4EC00E8436B /* MFPrimaryViewController.h */,
 				FBC2C7431960C4EC00E8436B /* MFPrimaryViewController.m */,
 				FBC2C7451960C9C000E8436B /* MFImageCapturer.h */,
 				FBC2C7461960C9C000E8436B /* MFImageCapturer.m */,
+				FBC2C748196109BC00E8436B /* MFAudioCapturer.h */,
+				FBC2C749196109BC00E8436B /* MFAudioCapturer.mm */,
 				FBC2C7251960C4AF00E8436B /* Images.xcassets */,
 				FBC2C71A1960C4AF00E8436B /* Supporting Files */,
 			);
@@ -152,6 +185,21 @@
 				FBC2C7351960C4AF00E8436B /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FBC2C74B19610D0800E8436B /* Novocaine */ = {
+			isa = PBXGroup;
+			children = (
+				FBC2C74C19610D8E00E8436B /* AudioFileReader.h */,
+				FBC2C74D19610D8E00E8436B /* AudioFileReader.mm */,
+				FBC2C74E19610D8E00E8436B /* AudioFileWriter.h */,
+				FBC2C74F19610D8E00E8436B /* AudioFileWriter.m */,
+				FBC2C75019610D8E00E8436B /* Novocaine.h */,
+				FBC2C75119610D8E00E8436B /* Novocaine.m */,
+				FBC2C75219610D8E00E8436B /* RingBuffer.h */,
+				FBC2C75319610D8E00E8436B /* RingBuffer.mm */,
+			);
+			name = Novocaine;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -230,6 +278,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBC2C75F1961269F00E8436B /* photoShutter2.caf in Resources */,
 				FBC2C71E1960C4AF00E8436B /* InfoPlist.strings in Resources */,
 				FBC2C7261960C4AF00E8436B /* Images.xcassets in Resources */,
 			);
@@ -250,10 +299,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBC2C75619610D8E00E8436B /* Novocaine.m in Sources */,
+				FBC2C74A196109BC00E8436B /* MFAudioCapturer.mm in Sources */,
 				FBC2C7471960C9C000E8436B /* MFImageCapturer.m in Sources */,
+				FBC2C75719610D8E00E8436B /* RingBuffer.mm in Sources */,
 				FBC2C7201960C4AF00E8436B /* main.m in Sources */,
+				FBC2C75419610D8E00E8436B /* AudioFileReader.mm in Sources */,
 				FBC2C7241960C4AF00E8436B /* MFAppDelegate.m in Sources */,
 				FBC2C7441960C4EC00E8436B /* MFPrimaryViewController.m in Sources */,
+				FBC2C75519610D8E00E8436B /* AudioFileWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -18,6 +18,8 @@
 
 @property (strong, nonatomic) AVCaptureStillImageOutput *stillImageOutput;
 
+@property (nonatomic, strong) NSTimer *captureTimer;
+
 @end
 
 @implementation MFImageCapturer
@@ -60,8 +62,10 @@
     self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
     
     self.captureSession = [AVCaptureSession new];
-    self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto;
+    self.captureSession.sessionPreset = AVCaptureSessionPresetMedium;
+    
     [self.captureSession addOutput:self.stillImageOutput];
+    
     if ([self.captureSession canAddInput:self.rearFacingCameraInput]) {
         [self.captureSession addInput:self.rearFacingCameraInput];
     }
@@ -71,6 +75,8 @@
 {
     if (!self.captureSession.running) {
         [self.captureSession startRunning];
+        [self captureImage];
+        self.captureTimer = [NSTimer scheduledTimerWithTimeInterval:0.45f target:self selector:@selector(captureImage) userInfo:nil repeats:YES];
     }
 }
 
@@ -78,7 +84,13 @@
 {
     if (self.captureSession.running) {
         [self.captureSession stopRunning];
+        [self.captureTimer invalidate];
     }
+}
+
+- (BOOL)running
+{
+    return self.captureSession.running;
 }
 
 - (void)swapCameras
@@ -96,19 +108,31 @@
     [self.captureSession commitConfiguration];
 }
 
-- (void)captureImage:(void (^)(NSData *jpegData))completion
+- (void)captureImage
 {
     AVCaptureConnection *stillImageConnection = [self.stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
     if (!stillImageConnection) {
-        completion(nil);
+        return;
     }
     
+    //[self playInverseShutterSound];
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:stillImageConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         if (!imageDataSampleBuffer) return;
         
         NSData *jpeg = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        completion(jpeg);
+        [self.delegate imageCaptured:[UIImage imageWithData:jpeg]];
     }];
+}
+
+- (void)playInverseShutterSound
+{
+    static SystemSoundID soundID = 0;
+    if (soundID == 0) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"photoShutter2" ofType:@"caf"];
+        NSURL *filePath = [NSURL fileURLWithPath:path isDirectory:NO];
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)filePath, &soundID);
+    }
+    AudioServicesPlaySystemSound(soundID);
 }
 
 @end

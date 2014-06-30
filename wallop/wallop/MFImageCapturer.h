@@ -8,13 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol MFImageCapturerDelegate <NSObject>
+
+- (void)imageCaptured:(UIImage *)image;
+
+@end
+
 @interface MFImageCapturer : NSObject
+
+@property (nonatomic, weak) id<MFImageCapturerDelegate> delegate;
 
 - (void)start;
 - (void)stop;
+- (BOOL)running;
 
 - (void)swapCameras;
-
-- (void)captureImage:(void (^)(NSData *jpegData))completion;
 
 @end

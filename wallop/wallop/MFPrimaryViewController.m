@@ -8,14 +8,16 @@
 
 #import "MFPrimaryViewController.h"
 #import "MFImageCapturer.h"
+#import "MFAudioCapturer.h"
 
-#define ACTIVE_IMAGES 18
+#define ACTIVE_IMAGES 25
 
-@interface MFPrimaryViewController ()
+@interface MFPrimaryViewController ()<MFImageCapturerDelegate>
 
 @property (nonatomic, strong) MFImageCapturer *imageCapturer;
-
 @property (nonatomic, strong) NSMutableArray *imageViews;
+
+@property (nonatomic, strong) MFAudioCapturer *audioCapturer;
 
 @end
 
@@ -35,59 +37,60 @@
     [super viewDidLoad];
     
     self.imageCapturer = [MFImageCapturer new];
+    self.imageCapturer.delegate = self;
     self.imageViews = [NSMutableArray new];
+    
+    self.audioCapturer = [MFAudioCapturer new];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     [self.imageCapturer start];
     
-    [self startImageDisplay];
+    [self.audioCapturer start];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    
     [self.imageCapturer stop];
+    
+    for (UIImageView *imageView in self.imageViews) {
+        [imageView removeFromSuperview];
+    }
+    self.imageViews = nil;
+    
+    [self.audioCapturer stop];
 }
 
-- (void)startImageDisplay
+- (void)imageCaptured:(UIImage *)image
 {
-    [self makeImage];
-
-    [self performSelector:@selector(startImageDisplay) withObject:self afterDelay:0.3f];
-}
-
-- (void)makeImage
-{
-    [self.imageCapturer captureImage:^(NSData *jpegData) {
-        if (!jpegData) return;
-        UIImage *image = [UIImage imageWithData:jpegData];
-        
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        imageView.alpha = [self imageAlpha];
-        imageView.frame = [self imageFrameForImage:image];
-        [self.view addSubview:imageView];
-        
-        [self.imageViews addObject:imageView];
-        
-        
-        if ([self.imageViews count] > ACTIVE_IMAGES) {
-            UIImageView *deadImageView = [self.imageViews firstObject];
-            [deadImageView removeFromSuperview];
-            [self.imageViews removeObjectAtIndex:0];
-        }
-    }];
+    if (!image) return;
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.alpha = [self imageAlpha];
+    imageView.frame = [self imageFrameForImage:image];
+    [self.view addSubview:imageView];
+    
+    [self.imageViews addObject:imageView];
+    
+    if ([self.imageViews count] > ACTIVE_IMAGES) {
+        UIImageView *deadImageView = [self.imageViews firstObject];
+        [deadImageView removeFromSuperview];
+        [self.imageViews removeObjectAtIndex:0];
+    }
 }
 
 - (CGRect)imageFrameForImage:(UIImage *)image
 {
-    int width = (arc4random() % (int) (self.view.frame.size.width / 2)) + self.view.frame.size.width / 2;
+    int width = (arc4random() % (int) (self.view.frame.size.width * 0.25)) + self.view.frame.size.width * 0.75;
     int height = width * image.size.height / image.size.width;
 
     int x = arc4random() % (int) (self.view.frame.size.width * 0.2);
-    int y = arc4random() % (int) (self.view.frame.size.height - height / 2);
+    int y = arc4random() % (int) (self.view.frame.size.height * 0.6);
     
     return CGRectMake(x, y, width, height);
 }
