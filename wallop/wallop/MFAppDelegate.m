@@ -9,6 +9,12 @@
 #import "MFAppDelegate.h"
 #import "MFPrimaryViewController.h"
 
+@interface MFAppDelegate ()
+
+@property (nonatomic, strong) MFPrimaryViewController *primaryViewController;
+
+@end
+
 @implementation MFAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -16,7 +22,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     
-    self.window.rootViewController = [MFPrimaryViewController new];
+    self.primaryViewController = [MFPrimaryViewController new];
+    self.window.rootViewController = self.primaryViewController;
     
     [self.window makeKeyAndVisible];
     return YES;
@@ -32,11 +39,14 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    [self.primaryViewController viewWillDisappear:NO];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [self.primaryViewController viewWillAppear:NO];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

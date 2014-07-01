@@ -10,6 +10,12 @@
 #import "Novocaine.h"
 #import "RingBuffer.h"
 
+typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
+    MFFeedback = 0,
+    MFRecording,
+    MFPlaying
+};
+
 @interface MFAudioCapturer ()
 
 @property (nonatomic, strong) Novocaine *audioManager;

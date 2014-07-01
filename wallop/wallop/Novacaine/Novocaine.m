@@ -225,6 +225,12 @@ static Novocaine *audioManager = nil;
 #endif
 }
 
+- (void)setSessionCategory:(UInt32)sessionCategory
+{
+    CheckError( AudioSessionSetProperty (kAudioSessionProperty_AudioCategory,
+                                         sizeof (sessionCategory),
+                                         &sessionCategory), "Couldn't set audio category");
+}
 
 - (void)setupAudioUnits
 {
@@ -235,10 +241,7 @@ static Novocaine *audioManager = nil;
 #if defined ( USING_IOS )
     
     // TODO: Move this somewhere more dynamic - should update category as appropriate to current application behavior
-    UInt32 sessionCategory = kAudioSessionCategory_PlayAndRecord;
-    CheckError( AudioSessionSetProperty (kAudioSessionProperty_AudioCategory,
-                                         sizeof (sessionCategory),
-                                         &sessionCategory), "Couldn't set audio category");    
+    [self setSessionCategory:kAudioSessionCategory_PlayAndRecord];
     
     
     // Add a property listener, to listen to changes to the session

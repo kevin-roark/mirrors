@@ -56,7 +56,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
+        
     [self.imageCapturer stop];
     
     for (UIImageView *imageView in self.imageViews) {
