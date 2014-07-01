@@ -62,7 +62,7 @@
     self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
     
     self.captureSession = [AVCaptureSession new];
-    self.captureSession.sessionPreset = AVCaptureSessionPresetMedium;
+    self.captureSession.sessionPreset = AVCaptureSessionPresetLow;
     
     [self.captureSession addOutput:self.stillImageOutput];
     
@@ -97,10 +97,10 @@
 {
     [self.captureSession beginConfiguration];
     
-    if ([self.captureSession.inputs containsObject:self.frontFacingCameraInput]) {
+    if ([self.captureSession.inputs containsObject:self.frontFacingCameraInput] && self.rearFacingCameraInput) {
         [self.captureSession removeInput:self.frontFacingCameraInput];
         [self.captureSession addInput:self.rearFacingCameraInput];
-    } else {
+    } else if ([self.captureSession.inputs containsObject:self.rearFacingCameraInput] && self.frontFacingCameraInput) {
         [self.captureSession removeInput:self.rearFacingCameraInput];
         [self.captureSession addInput:self.frontFacingCameraInput];
     }

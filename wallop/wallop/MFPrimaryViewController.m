@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSMutableArray *imageViews;
 
 @property (nonatomic, strong) MFAudioCapturer *audioCapturer;
+@property (nonatomic, strong) NSTimer *audioMutationTimer;
 
 @end
 
@@ -51,12 +52,13 @@
     [self.imageCapturer start];
     
     [self.audioCapturer start];
+    //self.audioMutationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self.audioCapturer selector:@selector(mutateAudioModes) userInfo:nil repeats:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-        
+    
     [self.imageCapturer stop];
     
     for (UIImageView *imageView in self.imageViews) {
@@ -65,6 +67,9 @@
     self.imageViews = nil;
     
     [self.audioCapturer stop];
+    
+    [self.audioMutationTimer invalidate];
+    self.audioMutationTimer = nil;
 }
 
 - (void)imageCaptured:(UIImage *)image

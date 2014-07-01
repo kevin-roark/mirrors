@@ -14,4 +14,14 @@
 - (void)stop;
 - (BOOL)running;
 
+- (void)mutateAudioModes;
+
+// input options
+- (void)setNoInput;
+- (void)setVolumeBoostingInputWithVolume:(float)volume;
+
+// output options
+- (void)setNoOutput;
+- (void)setPlayFromBufferOutput;
+
 @end
