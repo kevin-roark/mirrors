@@ -16,7 +16,7 @@
 
 #define BUFFER_SIZE 32768
 
-#define ECHO_WRITE_COUNTER 150
+#define ECHO_WRITE_COUNTER 130
 
 typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     MFFeedback = 0,
@@ -118,11 +118,27 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     // set 3 second delay
     MAKE_A_WEAKSELF;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        NSLog(@"dispatching echo");
-        NSURL *echoUrl = [self urlForFileNumber:weakSelf.numEchos];
-        weakSelf.fileWriter = [self fileWriterForUrl:echoUrl];
-        weakSelf.currentWriteCounter = 0;
+        [weakSelf createFileWriter];
     });
+}
+
+- (void)createFileWriter
+{
+    NSLog(@"creating writer");
+    NSURL *echoUrl = [self urlForFileNumber:self.numEchos];
+    self.fileWriter = [self fileWriterForUrl:echoUrl];
+    self.currentWriteCounter = 0;
+}
+
+- (void)createFileReader
+{
+    NSLog(@"creating reader");
+    NSURL *echoUrl = [self urlForFileNumber:self.numEchos];
+    self.fileReader = [self fileReaderForUrl:echoUrl];
+    self.currentReadCounter = 0;
+    self.currentLoops = 0;
+    [self.fileReader play];
+    ++self.numEchos;
 }
 
 #pragma mark -> Input
@@ -154,13 +170,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
             [weakSelf.fileWriter writeNewAudio:newAudio numFrames:numFrames numChannels:numChannels];
         } else if (weakSelf.fileWriter) {
             weakSelf.fileWriter = nil;
-            
-            NSLog(@"beginning echo read");
-            NSURL *echoUrl = [weakSelf urlForFileNumber:weakSelf.numEchos];
-            weakSelf.fileReader = [weakSelf fileReaderForUrl:echoUrl];
-            weakSelf.currentReadCounter = 0;
-            weakSelf.currentLoops = 0;
-            [weakSelf.fileReader play];
+            [weakSelf createFileReader];
         }
     }];
 }
@@ -191,8 +201,9 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
                 weakSelf.currentReadCounter = 0;
                 [weakSelf.fileReader play];
             }
-            else {
+            else if (weakSelf.fileReader) {
                 weakSelf.fileReader = nil;
+                [weakSelf createFileWriter];
             }
         }
     }];
