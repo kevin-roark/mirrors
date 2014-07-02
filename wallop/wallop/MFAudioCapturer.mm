@@ -9,10 +9,14 @@
 #import "MFAudioCapturer.h"
 #import "Novocaine.h"
 #import "RingBuffer.h"
+#import "AudioFileWriter.h"
+#import "AudioFileReader.h"
 
 #define MAKE_A_WEAKSELF __weak MFAudioCapturer *weakSelf = self
 
 #define BUFFER_SIZE 32768
+
+#define ECHO_WRITE_COUNTER 225
 
 typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     MFFeedback = 0,
@@ -23,7 +27,13 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 @interface MFAudioCapturer ()
 
 @property (nonatomic, strong) Novocaine *audioManager;
-@property (nonatomic, assign) RingBuffer *ringBuffer;
+@property (nonatomic, assign) RingBuffer *mainRingBuffer;
+
+@property (nonatomic) NSUInteger numEchos;
+@property (nonatomic, strong) AudioFileWriter *fileWriter;
+@property (nonatomic, strong) AudioFileReader *fileReader;
+@property (nonatomic) int currentWriteCounter;
+@property (nonatomic) int currentReadCounter;
 
 @property (nonatomic) MFAudioCaptureMode captureMode;
 @property (nonatomic) NSUInteger framesInWait;
@@ -44,12 +54,14 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 - (void)setup
 {
     self.audioManager = [Novocaine audioManager];
-    self.ringBuffer = new RingBuffer(BUFFER_SIZE, 1);
+    self.mainRingBuffer = new RingBuffer(BUFFER_SIZE, 1);
     self.framesInWait = 0;
     self.captureMode = MFFeedback;
     
     [self setVolumeBoostingInputWithVolume:1.4f];
     [self setNoOutput];
+
+    self.numEchos = 0;
 }
 
 - (void)mutateAudioModes
@@ -79,8 +91,9 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
         // set 1 second delay
         MAKE_A_WEAKSELF;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            NSLog(@"beginning playback");
             [weakSelf setPlayFromBufferOutput];
-            //DOESN'T WORK: [weakSelf setRingModulatorOutput];
+            [weakSelf beginLoopCapture];
         });
     }
 }
@@ -89,6 +102,8 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 {
     if (self.audioManager.playing) {
         [self.audioManager pause];
+        self.fileReader = nil;
+        self.fileWriter = nil;
     }
 }
 
@@ -96,6 +111,20 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 {
     return self.audioManager.playing;
 }
+
+- (void)beginLoopCapture
+{
+    // set 3 second delay
+    MAKE_A_WEAKSELF;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        NSLog(@"dispatching echo");
+        NSURL *echoUrl = [self urlForFileNumber:weakSelf.numEchos];
+        weakSelf.fileWriter = [self fileWriterForUrl:echoUrl];
+        weakSelf.currentWriteCounter = 0;
+    });
+}
+
+#pragma mark -> Input
 
 - (void)setNoInput
 {
@@ -116,11 +145,23 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     [self.audioManager setInputBlock:^(float *newAudio, UInt32 numFrames, UInt32 numChannels) {
         vDSP_vsmul(newAudio, 1, &volume, newAudio, 1, numFrames * numChannels);
         if (weakSelf.framesInWait + numFrames < BUFFER_SIZE) {
-            weakSelf.ringBuffer->AddNewInterleavedFloatData(newAudio, numFrames, numChannels);
+            weakSelf.mainRingBuffer->AddNewInterleavedFloatData(newAudio, numFrames, numChannels);
             weakSelf.framesInWait += numFrames;
+        }
+        
+        if (weakSelf.fileWriter && ++weakSelf.currentWriteCounter < ECHO_WRITE_COUNTER) {
+            [weakSelf.fileWriter writeNewAudio:newAudio numFrames:numFrames numChannels:numChannels];
+        } else if (weakSelf.fileWriter) {
+            weakSelf.fileWriter = nil;
+            NSURL *echoUrl = [weakSelf urlForFileNumber:weakSelf.numEchos];
+            weakSelf.fileReader = [weakSelf fileReaderForUrl:echoUrl];
+            weakSelf.currentReadCounter = 0;
+            [weakSelf.fileReader play];
         }
     }];
 }
+
+#pragma mark -> Output
 
 - (void)setNoOutput
 {
@@ -132,8 +173,19 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     MAKE_A_WEAKSELF;
     [self.audioManager setOutputBlock:^(float *audioToPlay, UInt32 numFrames, UInt32 numChannels) {
         if (weakSelf.framesInWait >= numFrames) {
-            weakSelf.ringBuffer->FetchInterleavedData(audioToPlay, numFrames, numChannels);
+            weakSelf.mainRingBuffer->FetchInterleavedData(audioToPlay, numFrames, numChannels);
             weakSelf.framesInWait -= numFrames;
+            if (weakSelf.fileReader && ++weakSelf.currentReadCounter < weakSelf.currentWriteCounter) {
+                // override the main ring buffer
+                NSLog(@"reading file");
+                [weakSelf.fileReader retrieveFreshAudio:audioToPlay numFrames:numFrames numChannels:numChannels];
+            }/* this would loop!! else if (weakSelf.fileReader) {
+                weakSelf.fileReader.currentTime = 0.0f;
+                weakSelf.currentReadCounter = 0;
+              } */
+            else {
+                weakSelf.fileReader = nil;
+            }
         }
     }];
 }
@@ -146,7 +198,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
          if (weakSelf.framesInWait < numFrames) return;
          
-         weakSelf.ringBuffer->FetchInterleavedData(data, numFrames, numChannels);
+         weakSelf.mainRingBuffer->FetchInterleavedData(data, numFrames, numChannels);
          
          float samplingRate = weakSelf.audioManager.samplingRate;
         
@@ -159,6 +211,24 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
              if (phase > 1.0) phase = -1;
          }
      }];
+}
+
+#pragma mark -> Helpers
+
+- (NSURL *)urlForFileNumber:(NSUInteger)fileNumber
+{
+    return [NSURL fileURLWithPathComponents:@[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],
+                                              [NSString stringWithFormat:@"mfecho-%lu", fileNumber]]];
+}
+
+- (AudioFileReader *)fileReaderForUrl:(NSURL *)url
+{
+    return [[AudioFileReader alloc] initWithAudioFileURL:url samplingRate:self.audioManager.samplingRate numChannels:self.audioManager.numOutputChannels];
+}
+
+- (AudioFileWriter *)fileWriterForUrl:(NSURL *)url
+{
+    return [[AudioFileWriter alloc] initWithAudioFileURL:url samplingRate:self.audioManager.samplingRate numChannels:self.audioManager.numInputChannels];
 }
 
 @end
