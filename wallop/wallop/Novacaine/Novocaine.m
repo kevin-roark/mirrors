@@ -190,6 +190,7 @@ static Novocaine *audioManager = nil;
 #if !TARGET_IPHONE_SIMULATOR
     UInt32 value = forceOutputToSpeaker ? 1 : 0;
     // should not be fatal error
+    NSLog(@"setting force to speaker good? %d", value);
     OSStatus err = AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryDefaultToSpeaker, sizeof(UInt32), &value);
     if (err != noErr){
         NSLog(@"Could not override audio output route to speaker");
@@ -232,6 +233,18 @@ static Novocaine *audioManager = nil;
                                          &sessionCategory), "Couldn't set audio category");
 }
 
+- (void)setAudioSessionMode:(UInt32)mode
+{
+    CheckError( AudioSessionSetProperty (kAudioSessionProperty_Mode,
+                                         sizeof (mode),
+                                         &mode), "Couldn't set audio session mode");
+}
+
+- (void)setAudioSessionInputGainScalar:(Float32)scalar
+{
+    CheckError(AudioSessionSetProperty(kAudioSessionProperty_InputGainScalar, sizeof(scalar), &scalar), "Couldn't set audio input gain scalar");
+}
+
 - (void)setupAudioUnits
 {
     
@@ -242,7 +255,6 @@ static Novocaine *audioManager = nil;
     
     // TODO: Move this somewhere more dynamic - should update category as appropriate to current application behavior
     [self setSessionCategory:kAudioSessionCategory_PlayAndRecord];
-    
     
     // Add a property listener, to listen to changes to the session
     CheckError( AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange, sessionPropertyListener, (__bridge void*)self), "Couldn't add audio session property listener");

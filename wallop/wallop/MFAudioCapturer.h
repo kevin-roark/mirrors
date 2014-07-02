@@ -23,5 +23,6 @@
 // output options
 - (void)setNoOutput;
 - (void)setPlayFromBufferOutput;
+- (void)setRingModulatorOutput;
 
 @end

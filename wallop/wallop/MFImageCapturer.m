@@ -76,7 +76,7 @@
     if (!self.captureSession.running) {
         [self.captureSession startRunning];
         [self captureImage];
-        self.captureTimer = [NSTimer scheduledTimerWithTimeInterval:0.45f target:self selector:@selector(captureImage) userInfo:nil repeats:YES];
+        self.captureTimer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(captureImage) userInfo:nil repeats:YES];
     }
 }
 

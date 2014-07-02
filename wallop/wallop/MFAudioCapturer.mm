@@ -48,13 +48,8 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     self.framesInWait = 0;
     self.captureMode = MFFeedback;
     
-    [self setVolumeBoostingInputWithVolume:30.0f];
-    
-    // set 1 second delay
-    MAKE_A_WEAKSELF;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [weakSelf setPlayFromBufferOutput];
-    });
+    [self setVolumeBoostingInputWithVolume:1.4f];
+    [self setNoOutput];
 }
 
 - (void)mutateAudioModes
@@ -78,7 +73,15 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 - (void)start
 {
     if (!self.audioManager.playing) {
+        [self.audioManager setForceOutputToSpeaker:YES];
         [self.audioManager play];
+        
+        // set 1 second delay
+        MAKE_A_WEAKSELF;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [weakSelf setPlayFromBufferOutput];
+            //DOESN'T WORK: [weakSelf setRingModulatorOutput];
+        });
     }
 }
 
@@ -133,6 +136,29 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
             weakSelf.framesInWait -= numFrames;
         }
     }];
+}
+
+- (void)setRingModulatorOutput
+{
+    MAKE_A_WEAKSELF;
+    __block float frequency = 100.0;
+    __block float phase = 0.0;
+    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+         if (weakSelf.framesInWait < numFrames) return;
+         
+         weakSelf.ringBuffer->FetchInterleavedData(data, numFrames, numChannels);
+         
+         float samplingRate = weakSelf.audioManager.samplingRate;
+        
+         for (int i=0; i < numFrames; ++i) {
+             for (int iChannel = 0; iChannel < numChannels; ++iChannel) {
+                 float theta = phase * M_PI * 2;
+                 data[i*numChannels + iChannel] *= sin(theta);
+             }
+             phase += 1.0 / (samplingRate / frequency);
+             if (phase > 1.0) phase = -1;
+         }
+     }];
 }
 
 @end

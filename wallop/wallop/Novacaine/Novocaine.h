@@ -149,6 +149,7 @@ typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numCha
 #if defined ( USING_IOS )
 - (void)checkSessionProperties;
 - (void)checkAudioSource;
+- (void)setForceOutputToSpeaker:(BOOL)forceOutputToSpeaker;
 #endif
 
 
