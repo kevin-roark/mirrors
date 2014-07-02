@@ -16,7 +16,7 @@
 
 #define BUFFER_SIZE 32768
 
-#define ECHO_WRITE_COUNTER 225
+#define ECHO_WRITE_COUNTER 150
 
 typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     MFFeedback = 0,
@@ -34,6 +34,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 @property (nonatomic, strong) AudioFileReader *fileReader;
 @property (nonatomic) int currentWriteCounter;
 @property (nonatomic) int currentReadCounter;
+@property (nonatomic) int currentLoops;
 
 @property (nonatomic) MFAudioCaptureMode captureMode;
 @property (nonatomic) NSUInteger framesInWait;
@@ -153,9 +154,12 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
             [weakSelf.fileWriter writeNewAudio:newAudio numFrames:numFrames numChannels:numChannels];
         } else if (weakSelf.fileWriter) {
             weakSelf.fileWriter = nil;
+            
+            NSLog(@"beginning echo read");
             NSURL *echoUrl = [weakSelf urlForFileNumber:weakSelf.numEchos];
             weakSelf.fileReader = [weakSelf fileReaderForUrl:echoUrl];
             weakSelf.currentReadCounter = 0;
+            weakSelf.currentLoops = 0;
             [weakSelf.fileReader play];
         }
     }];
@@ -176,13 +180,17 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
             weakSelf.mainRingBuffer->FetchInterleavedData(audioToPlay, numFrames, numChannels);
             weakSelf.framesInWait -= numFrames;
             if (weakSelf.fileReader && ++weakSelf.currentReadCounter < weakSelf.currentWriteCounter) {
-                // override the main ring buffer
-                NSLog(@"reading file");
-                [weakSelf.fileReader retrieveFreshAudio:audioToPlay numFrames:numFrames numChannels:numChannels];
-            }/* this would loop!! else if (weakSelf.fileReader) {
+                // mix with the main ring buffer
+                float *readingAudio = (float *) malloc(numFrames * numChannels * sizeof(float));
+                [weakSelf.fileReader retrieveFreshAudio:readingAudio numFrames:numFrames numChannels:numChannels];
+
+                vDSP_vadd(audioToPlay, 1, readingAudio, 1, audioToPlay, 1, numFrames * numChannels);
+            }
+            else if (weakSelf.fileReader && ++weakSelf.currentLoops <= 5) {
                 weakSelf.fileReader.currentTime = 0.0f;
                 weakSelf.currentReadCounter = 0;
-              } */
+                [weakSelf.fileReader play];
+            }
             else {
                 weakSelf.fileReader = nil;
             }
