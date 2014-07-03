@@ -45,6 +45,11 @@
     self.audioCapturer = [MFAudioCapturer new];
 }
 
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
