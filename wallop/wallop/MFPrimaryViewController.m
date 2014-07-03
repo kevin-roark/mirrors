@@ -16,7 +16,7 @@
 @interface MFPrimaryViewController ()<MFImageCapturerDelegate>
 
 @property (nonatomic, strong) MFImageCapturer *imageCapturer;
-@property (nonatomic, strong) NSMutableArray *imageViews;
+@property (nonatomic, strong) NSMutableArray *imageLayers;
 
 @property (nonatomic, strong) MFAudioCapturer *audioCapturer;
 @property (nonatomic, strong) NSTimer *audioMutationTimer;
@@ -40,7 +40,7 @@
     
     self.imageCapturer = [MFImageCapturer new];
     self.imageCapturer.delegate = self;
-    self.imageViews = [NSMutableArray new];
+    self.imageLayers = [NSMutableArray new];
     
     self.audioCapturer = [MFAudioCapturer new];
 }
@@ -61,10 +61,10 @@
     
     [self.imageCapturer stop];
     
-    for (UIImageView *imageView in self.imageViews) {
-        [imageView removeFromSuperview];
+    for (CALayer *layer in self.imageLayers) {
+        [layer removeFromSuperlayer];
     }
-    self.imageViews = nil;
+    self.imageLayers = nil;
     
     [self.audioCapturer stop];
     
@@ -76,17 +76,19 @@
 {
     if (!image) return;
     
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-    imageView.alpha = [self imageAlpha];
-    imageView.frame = [self imageFrameForImage:image];
-    [self.view addSubview:imageView];
+    CALayer *imageLayer = [CALayer layer];
+    imageLayer.contents = (id) image.CGImage;
+    imageLayer.frame = [self imageFrameForImage:image];
+    imageLayer.opacity = [self imageAlpha];
+    imageLayer.transform = [self imageTransform];
+    [self.view.layer addSublayer:imageLayer];
     
-    [self.imageViews addObject:imageView];
+    [self.imageLayers addObject:imageLayer];
     
-    if ([self.imageViews count] > ACTIVE_IMAGES) {
-        UIImageView *deadImageView = [self.imageViews firstObject];
-        [deadImageView removeFromSuperview];
-        [self.imageViews removeObjectAtIndex:0];
+    if ([self.imageLayers count] > ACTIVE_IMAGES) {
+        CALayer *deadImageLayer = [self.imageLayers firstObject];
+        [deadImageLayer removeFromSuperlayer];
+        [self.imageLayers removeObjectAtIndex:0];
     }
     
     double val = ((double) arc4random() / ARC4RANDOM_MAX);
@@ -110,6 +112,13 @@
 {
     double val = ((double) arc4random() / ARC4RANDOM_MAX);
     return 0.5 * val + 0.5;
+}
+
+- (CATransform3D)imageTransform
+{
+    NSInteger degrees = (arc4random() % (360));
+    CGFloat radians = degrees / 180.0f * M_PI;
+    return CATransform3DMakeAffineTransform(CGAffineTransformMakeRotation(radians));
 }
 
 @end
