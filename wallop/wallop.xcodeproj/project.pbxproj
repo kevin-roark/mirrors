@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB9A7F6F19650C7E003282B3 /* MFAudioLooper.mm in Sources */ = {isa = PBXBuildFile; fileRef = FB9A7F6E19650C7E003282B3 /* MFAudioLooper.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		FBC2C7141960C4AF00E8436B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C7131960C4AF00E8436B /* Foundation.framework */; };
 		FBC2C7161960C4AF00E8436B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C7151960C4AF00E8436B /* CoreGraphics.framework */; };
 		FBC2C7181960C4AF00E8436B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C7171960C4AF00E8436B /* UIKit.framework */; };
@@ -43,6 +44,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FB9A7F6D19650C7E003282B3 /* MFAudioLooper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MFAudioLooper.h; sourceTree = "<group>"; };
+		FB9A7F6E19650C7E003282B3 /* MFAudioLooper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MFAudioLooper.mm; sourceTree = "<group>"; };
 		FBC2C7101960C4AF00E8436B /* wallop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wallop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBC2C7131960C4AF00E8436B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FBC2C7151960C4AF00E8436B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -152,6 +155,8 @@
 				FBC2C7461960C9C000E8436B /* MFImageCapturer.m */,
 				FBC2C748196109BC00E8436B /* MFAudioCapturer.h */,
 				FBC2C749196109BC00E8436B /* MFAudioCapturer.mm */,
+				FB9A7F6D19650C7E003282B3 /* MFAudioLooper.h */,
+				FB9A7F6E19650C7E003282B3 /* MFAudioLooper.mm */,
 				FBC2C7251960C4AF00E8436B /* Images.xcassets */,
 				FBC2C71A1960C4AF00E8436B /* Supporting Files */,
 			);
@@ -306,6 +311,7 @@
 				FBC2C74A196109BC00E8436B /* MFAudioCapturer.mm in Sources */,
 				FBC2C7471960C9C000E8436B /* MFImageCapturer.m in Sources */,
 				FBC2C75719610D8E00E8436B /* RingBuffer.mm in Sources */,
+				FB9A7F6F19650C7E003282B3 /* MFAudioLooper.mm in Sources */,
 				FBC2C7201960C4AF00E8436B /* main.m in Sources */,
 				FBC2C75419610D8E00E8436B /* AudioFileReader.mm in Sources */,
 				FBC2C7241960C4AF00E8436B /* MFAppDelegate.m in Sources */,
