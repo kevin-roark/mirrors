@@ -25,9 +25,10 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 
 @property (nonatomic, strong) Novocaine *audioManager;
 @property (nonatomic, assign) RingBuffer *mainRingBuffer;
-@property (nonatomic, strong) MFAudioLooper *currentLooper;
 
-@property (nonatomic) NSUInteger numEchos;
+@property (nonatomic) BOOL currentlyRecording;
+
+@property (nonatomic, strong) NSMutableArray *loopers;
 
 @property (nonatomic) MFAudioCaptureMode captureMode;
 @property (nonatomic) NSUInteger framesInWait;
@@ -49,13 +50,15 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 {
     self.audioManager = [Novocaine audioManager];
     self.mainRingBuffer = new RingBuffer(BUFFER_SIZE, 1);
+    
+    self.loopers = [NSMutableArray arrayWithCapacity:5];
+    
     self.framesInWait = 0;
     self.captureMode = MFFeedback;
+    self.currentlyRecording = YES;
     
     [self setVolumeBoostingInputWithVolume:1.4f];
     [self setNoOutput];
-
-    self.numEchos = 0;
 }
 
 - (void)mutateAudioModes
@@ -110,27 +113,51 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     MAKE_A_WEAKSELF;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [weakSelf createLooper];
+        [weakSelf beginLoopCapture];
     });
 }
 
 - (void)createLooper
 {
     NSLog(@"creating looper");
-    self.currentLooper = [MFAudioLooper audioLooperWithRandomFramesWithChannels:self.audioManager.numInputChannels];
-    ++self.numEchos;
+    
+    if (self.currentlyRecording) {
+        MFAudioLooper *currentLooper = [MFAudioLooper audioLooperWithRandomFramesWithChannels:self.audioManager.numInputChannels];
+        currentLooper.loopsDeserved = 5;
+        
+        [self.loopers addObject:currentLooper];
+    }
+    
+    // only keep the good Loopers
+    NSMutableArray *goodLoopers = [NSMutableArray arrayWithCapacity:[self.loopers count]];
+    for (MFAudioLooper *looper in self.loopers) {
+        if (looper.timesLooped <= looper.loopsDeserved) {
+            [goodLoopers addObject:looper];
+        }
+    }
+    
+    [self.loopers setArray:goodLoopers];
 }
 
 #pragma mark -> Input
 
 - (void)setNoInput
 {
-    [self.audioManager setSessionCategory:kAudioSessionCategory_MediaPlayback];
-    //[self.audioManager setInputBlock:nil];
+    [self.audioManager setInputBlock:nil];
+    self.currentlyRecording = NO;
+    
+    for (MFAudioLooper *looper in self.loopers) {
+        looper.loopsDeserved = 10000;
+    }
 }
 
 - (void)someInputSet
 {
-    [self.audioManager setSessionCategory:kAudioSessionCategory_PlayAndRecord];
+    for (MFAudioLooper *looper in self.loopers) {
+        looper.loopsDeserved = 5;
+    }
+    
+    self.currentlyRecording = YES;
 }
 
 - (void)setVolumeBoostingInputWithVolume:(float)volume
@@ -151,8 +178,10 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     self.mainRingBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
     self.framesInWait += numFrames;
     
-    if (self.currentLooper && !self.currentLooper.readyToPlay) {
-        [self.currentLooper addAudio:data numFrames:numFrames];
+    for (MFAudioLooper *looper in self.loopers) {
+        if (!looper.readyToPlay) {
+            [looper addAudio:data numFrames:numFrames];
+        }
     }
 }
 
@@ -167,23 +196,30 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 {
     MAKE_A_WEAKSELF;
     [self.audioManager setOutputBlock:^(float *audioToPlay, UInt32 numFrames, UInt32 numChannels) {
-        if (weakSelf.framesInWait >= numFrames) {
+        if (weakSelf.currentlyRecording && weakSelf.framesInWait >= numFrames) {
             weakSelf.mainRingBuffer->FetchInterleavedData(audioToPlay, numFrames, numChannels);
             weakSelf.framesInWait -= numFrames;
-            
-            if (weakSelf.currentLooper && weakSelf.currentLooper.readyToPlay) {
-                if (weakSelf.currentLooper.timesLooped <= 5) {
-                    float freshAudioBuffer[numFrames * numChannels];
-                    [weakSelf.currentLooper fillAudio:freshAudioBuffer numFrames:numFrames numChannels:numChannels];
-                    
-                    // combine audio from loop and main buffer
-                    vDSP_vadd(audioToPlay, 1, freshAudioBuffer, 1, audioToPlay, 1, numFrames * numChannels);
-                } else {
-                    [weakSelf createLooper];
-                }
+        } else {
+            memset(audioToPlay, 0, numChannels * numFrames * sizeof(float));
+        }
+        
+        [weakSelf addAudioFromLoopers:audioToPlay numFrames:numFrames numChannels:numChannels];
+    }];
+}
+
+- (void)addAudioFromLoopers:(float *)audioToPlay numFrames:(UInt32)numFrames numChannels:(UInt32)numChannels
+{
+    for (MFAudioLooper *looper in self.loopers) {
+        if (looper.readyToPlay) {
+            float freshAudioBuffer[numFrames * numChannels];
+            if (looper.timesLooped <= looper.loopsDeserved) {
+                [looper fillAudio:freshAudioBuffer numFrames:numFrames numChannels:numChannels];
+                
+                // combine audio from loop and main buffer
+                vDSP_vadd(audioToPlay, 1, freshAudioBuffer, 1, audioToPlay, 1, numFrames * numChannels);
             }
         }
-    }];
+    }
 }
 
 - (void)setRingModulatorOutput

@@ -17,6 +17,7 @@
 @property (nonatomic) NSUInteger numChannels;
 @property (nonatomic) BOOL readyToPlay;
 @property (nonatomic) NSUInteger timesLooped;
+@property (nonatomic) NSUInteger loopsDeserved;
 
 - (instancetype)initWithFramesWanted:(NSUInteger)framesWanted andChannels:(NSUInteger)numChannels;
 

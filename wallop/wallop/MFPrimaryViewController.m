@@ -17,22 +17,16 @@
 
 @property (nonatomic, strong) MFImageCapturer *imageCapturer;
 @property (nonatomic, strong) NSMutableArray *imageLayers;
+@property (nonatomic) BOOL acceptingImages;
 
 @property (nonatomic, strong) MFAudioCapturer *audioCapturer;
 @property (nonatomic, strong) NSTimer *audioMutationTimer;
 
+@property (nonatomic, strong) UIButton *stopRecordingButton;
+
 @end
 
 @implementation MFPrimaryViewController
-
-- (id)init
-{
-    self = [super init];
-    if (self) {
-
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
@@ -43,6 +37,17 @@
     self.imageLayers = [NSMutableArray new];
     
     self.audioCapturer = [MFAudioCapturer new];
+    
+    self.stopRecordingButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.stopRecordingButton.backgroundColor = [UIColor clearColor];
+    self.stopRecordingButton.frame = self.view.frame;
+    [self.view addSubview:self.stopRecordingButton];
+    
+    [self.stopRecordingButton addTarget:self action:@selector(stopRecordingPressedDown) forControlEvents:UIControlEventTouchDown];
+    [self.stopRecordingButton addTarget:self action:@selector(stopRecordingReleased) forControlEvents:UIControlEventTouchUpInside];
+    [self.stopRecordingButton addTarget:self action:@selector(stopRecordingReleased) forControlEvents:UIControlEventTouchUpOutside];
+    
+    self.acceptingImages = YES;
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -77,16 +82,31 @@
     self.audioMutationTimer = nil;
 }
 
+- (void)stopRecordingPressedDown
+{
+    NSLog(@"stopping recording");
+    [self.audioCapturer setNoInput];
+    self.acceptingImages = NO;
+}
+
+- (void)stopRecordingReleased
+{
+    NSLog(@"starting recording");
+    [self.audioCapturer setVolumeBoostingInputWithVolume:1.4f];
+    self.acceptingImages = YES;
+}
+
 - (void)imageCaptured:(UIImage *)image
 {
-    if (!image) return;
+    if (!image || !self.acceptingImages) return;
     
     CALayer *imageLayer = [CALayer layer];
     imageLayer.contents = (id) image.CGImage;
     imageLayer.frame = [self imageFrameForImage:image];
     imageLayer.opacity = [self imageAlpha];
     imageLayer.transform = [self imageTransform];
-    [self.view.layer addSublayer:imageLayer];
+    //[self.view.layer addSublayer:imageLayer];
+    [self.view.layer insertSublayer:imageLayer below:self.stopRecordingButton.layer];
     
     [self.imageLayers addObject:imageLayer];
     

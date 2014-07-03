@@ -70,7 +70,6 @@
     if (self.currentBufferFrame > self.numFrames) {
         self.timesLooped += 1;
         self.currentBufferFrame = self.currentBufferFrame - self.numFrames;
-        NSLog(@"increaed loops to %lu", self.timesLooped);
     }
 }
 
