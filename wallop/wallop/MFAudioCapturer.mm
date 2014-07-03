@@ -191,7 +191,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
             weakSelf.framesInWait -= numFrames;
             if (weakSelf.fileReader && ++weakSelf.currentReadCounter < weakSelf.currentWriteCounter) {
                 // mix with the main ring buffer
-                float *readingAudio = (float *) malloc(numFrames * numChannels * sizeof(float));
+                float readingAudio[numFrames * numChannels];
                 [weakSelf.fileReader retrieveFreshAudio:readingAudio numFrames:numFrames numChannels:numChannels];
 
                 vDSP_vadd(audioToPlay, 1, readingAudio, 1, audioToPlay, 1, numFrames * numChannels);
