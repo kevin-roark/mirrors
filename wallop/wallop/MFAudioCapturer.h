@@ -27,6 +27,8 @@
 
 - (void)mutateAudioModes;
 
+- (void)createLooper;
+
 // input options
 - (void)setNoInput;
 - (void)setVolumeBoostingInputWithVolume:(float)volume;

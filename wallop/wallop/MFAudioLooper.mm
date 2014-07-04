@@ -51,6 +51,7 @@
         self.numFrames += numFrames;
     } else {
         self.readyToPlay = YES;
+        [self.delegate filledLoooper:self];
     }
     
     return !self.readyToPlay;

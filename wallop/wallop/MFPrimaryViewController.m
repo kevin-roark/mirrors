@@ -41,16 +41,6 @@
     self.audioCapturer = [MFAudioCapturer new];
     self.audioCapturer.delegate = self;
     
-    CGFloat loopSize = 60;
-    CGFloat padding = 20;
-    self.loopMakingIndicator = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - loopSize - padding, padding, loopSize, loopSize)];
-    self.loopMakingIndicator.backgroundColor = [UIColor clearColor];
-    self.loopMakingIndicator.layer.cornerRadius = loopSize / 2.0f;
-    self.loopMakingIndicator.layer.borderColor = [UIColor redColor].CGColor;
-    self.loopMakingIndicator.layer.borderWidth = 10.0f;
-    self.loopMakingIndicator.hidden = YES;
-    [self.view addSubview:self.loopMakingIndicator];
-    
     self.stopRecordingButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.stopRecordingButton.backgroundColor = [UIColor clearColor];
     self.stopRecordingButton.frame = self.view.frame;
@@ -59,6 +49,16 @@
     [self.stopRecordingButton addTarget:self action:@selector(stopRecordingPressedDown) forControlEvents:UIControlEventTouchDown];
     [self.stopRecordingButton addTarget:self action:@selector(stopRecordingReleased) forControlEvents:UIControlEventTouchUpInside];
     [self.stopRecordingButton addTarget:self action:@selector(stopRecordingReleased) forControlEvents:UIControlEventTouchUpOutside];
+    
+    CGFloat loopSize = 40;
+    CGFloat padding = 15;
+    self.loopMakingIndicator = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - loopSize - padding, padding, loopSize, loopSize)];
+    self.loopMakingIndicator.backgroundColor = [UIColor clearColor];
+    self.loopMakingIndicator.layer.cornerRadius = loopSize / 2.0f;
+    self.loopMakingIndicator.layer.borderColor = [UIColor redColor].CGColor;
+    self.loopMakingIndicator.layer.borderWidth = 7.0f;
+    self.loopMakingIndicator.layer.opacity = 0.0f;
+    [self.view addSubview:self.loopMakingIndicator];
     
     self.acceptingImages = YES;
 }
@@ -100,6 +100,7 @@
     NSLog(@"stopping recording");
     [self.audioCapturer setNoInput];
     self.acceptingImages = NO;
+    [self stoppedMakingLoop];
 }
 
 - (void)stopRecordingReleased
@@ -107,6 +108,7 @@
     NSLog(@"starting recording");
     [self.audioCapturer setVolumeBoostingInputWithVolume:DEFAULT_VOL_GAIN];
     self.acceptingImages = YES;
+    [self.audioCapturer createLooper];
 }
 
 - (void)imageCaptured:(UIImage *)image
@@ -163,12 +165,20 @@
 
 - (void)startedMakingLoop
 {
-    self.loopMakingIndicator.hidden = NO;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+        [UIView animateWithDuration:0.4f animations:^{
+            self.loopMakingIndicator.layer.opacity = 1.0f;
+        }];
+    }];
 }
 
 - (void)stoppedMakingLoop
 {
-    self.loopMakingIndicator.hidden = YES;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+        [UIView animateWithDuration:0.4f animations:^{
+            self.loopMakingIndicator.layer.opacity = 0.0f;
+        }];
+    }];
 }
 
 @end

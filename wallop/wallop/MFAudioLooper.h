@@ -9,9 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "RingBuffer.h"
 
+@protocol MFAudioLooperDelegate;
+
 @interface MFAudioLooper : NSObject
 
 @property (nonatomic, assign) RingBuffer *ringBuffer;
+
+@property (nonatomic, assign) id<MFAudioLooperDelegate> delegate;
 
 @property (nonatomic) NSUInteger framesWanted;
 @property (nonatomic) NSUInteger numChannels;
@@ -26,5 +30,11 @@
 - (void)fillAudio:(float *)audioToPlay numFrames:(UInt32)numFrames numChannels:(UInt32)numChannels;
 
 + (MFAudioLooper *)audioLooperWithRandomFramesWithChannels:(NSUInteger)numChannels;
+
+@end
+
+@protocol MFAudioLooperDelegate <NSObject>
+
+- (void)filledLoooper:(MFAudioLooper *)looper;
 
 @end

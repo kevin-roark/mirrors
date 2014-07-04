@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     MFPlaying
 };
 
-@interface MFAudioCapturer ()
+@interface MFAudioCapturer ()<MFAudioLooperDelegate>
 
 @property (nonatomic, strong) Novocaine *audioManager;
 @property (nonatomic, assign) RingBuffer *mainRingBuffer;
@@ -109,12 +109,12 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 
 - (void)beginLoopCapture
 {
-    // set 3 second delay
+    // set 1 -> 2second delay
     MAKE_A_WEAKSELF;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    CGFloat seconds = (arc4random() % 2) + 1.25;
+    NSLog(@"loop capture time %f", seconds);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, seconds * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [weakSelf createLooper];
-        [weakSelf beginLoopCapture];
     });
 }
 
@@ -125,7 +125,8 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     
     if (self.currentlyRecording) {
         MFAudioLooper *currentLooper = [MFAudioLooper audioLooperWithRandomFramesWithChannels:self.audioManager.numInputChannels];
-        currentLooper.loopsDeserved = 5;
+        currentLooper.loopsDeserved = arc4random() % 10 + 3;
+        currentLooper.delegate = self;
         
         [self.loopers addObject:currentLooper];
     }
@@ -139,6 +140,12 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     }
     
     [self.loopers setArray:goodLoopers];
+}
+
+- (void)filledLoooper:(MFAudioLooper *)looper
+{
+    [self.delegate stoppedMakingLoop];
+    [self beginLoopCapture];
 }
 
 #pragma mark -> Input
@@ -183,9 +190,6 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     for (MFAudioLooper *looper in self.loopers) {
         if (!looper.readyToPlay) {
             [looper addAudio:data numFrames:numFrames];
-            if (looper.readyToPlay) {
-                [self.delegate stoppedMakingLoop];
-            }
         }
     }
 }
