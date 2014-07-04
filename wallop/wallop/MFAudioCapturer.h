@@ -31,6 +31,7 @@
 
 // input options
 - (void)setNoInput;
+- (void)setNoInputAndDeleteLoops;
 - (void)setVolumeBoostingInputWithVolume:(float)volume;
 
 // output options

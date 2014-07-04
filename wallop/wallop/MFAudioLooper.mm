@@ -10,7 +10,7 @@
 #import "Novocaine.h"
 
 #define MIN_FRAMES 25000
-#define MORE_FRAMES 99999
+#define MORE_FRAMES 90000
 
 @interface MFAudioLooper ()
 
@@ -40,7 +40,6 @@
 + (MFAudioLooper *)audioLooperWithRandomFramesWithChannels:(NSUInteger)numChannels
 {
     NSUInteger numFrames = (arc4random() % MORE_FRAMES) + MIN_FRAMES;
-    NSLog(@"random frame amount: %lu", numFrames);
     return [[MFAudioLooper alloc] initWithFramesWanted:numFrames andChannels:numChannels];
 }
 

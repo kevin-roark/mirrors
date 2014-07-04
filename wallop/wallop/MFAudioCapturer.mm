@@ -160,6 +160,14 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     }
 }
 
+- (void)setNoInputAndDeleteLoops
+{
+    [self.audioManager setInputBlock:nil];
+    self.currentlyRecording = NO;
+    
+    self.loopers = [NSMutableArray new];
+}
+
 - (void)someInputSet
 {
     for (MFAudioLooper *looper in self.loopers) {
@@ -205,7 +213,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 {
     MAKE_A_WEAKSELF;
     [self.audioManager setOutputBlock:^(float *audioToPlay, UInt32 numFrames, UInt32 numChannels) {
-        if (weakSelf.currentlyRecording && weakSelf.framesInWait >= numFrames) {
+        if (weakSelf.framesInWait >= numFrames) {
             weakSelf.mainRingBuffer->FetchInterleavedData(audioToPlay, numFrames, numChannels);
             weakSelf.framesInWait -= numFrames;
         } else {

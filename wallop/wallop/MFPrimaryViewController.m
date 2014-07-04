@@ -13,7 +13,7 @@
 #define ARC4RANDOM_MAX 0x100000000
 #define ACTIVE_IMAGES 25
 
-@interface MFPrimaryViewController ()<MFImageCapturerDelegate, MFAudioCapturerDelegate>
+@interface MFPrimaryViewController ()<MFImageCapturerDelegate, MFAudioCapturerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) MFImageCapturer *imageCapturer;
 @property (nonatomic, strong) NSMutableArray *imageLayers;
@@ -22,9 +22,10 @@
 @property (nonatomic, strong) MFAudioCapturer *audioCapturer;
 @property (nonatomic, strong) NSTimer *audioMutationTimer;
 
-@property (nonatomic, strong) UIButton *stopRecordingButton;
-
 @property (nonatomic, strong) UIView *loopMakingIndicator;
+
+@property (nonatomic, strong) UITapGestureRecognizer *singleFingerTapRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *doubleFingerTapRecognizer;
 
 @end
 
@@ -40,16 +41,7 @@
     
     self.audioCapturer = [MFAudioCapturer new];
     self.audioCapturer.delegate = self;
-    
-    self.stopRecordingButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.stopRecordingButton.backgroundColor = [UIColor clearColor];
-    self.stopRecordingButton.frame = self.view.frame;
-    [self.view addSubview:self.stopRecordingButton];
-    
-    [self.stopRecordingButton addTarget:self action:@selector(stopRecordingPressedDown) forControlEvents:UIControlEventTouchDown];
-    [self.stopRecordingButton addTarget:self action:@selector(stopRecordingReleased) forControlEvents:UIControlEventTouchUpInside];
-    [self.stopRecordingButton addTarget:self action:@selector(stopRecordingReleased) forControlEvents:UIControlEventTouchUpOutside];
-    
+
     CGFloat loopSize = 40;
     CGFloat padding = 15;
     self.loopMakingIndicator = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - loopSize - padding, padding, loopSize, loopSize)];
@@ -59,6 +51,20 @@
     self.loopMakingIndicator.layer.borderWidth = 7.0f;
     self.loopMakingIndicator.layer.opacity = 0.0f;
     [self.view addSubview:self.loopMakingIndicator];
+    
+    self.singleFingerTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleFingerTap)];
+    self.singleFingerTapRecognizer.numberOfTouchesRequired = 1;
+    self.singleFingerTapRecognizer.numberOfTapsRequired = 1;
+    self.singleFingerTapRecognizer.delaysTouchesBegan = NO;
+    self.singleFingerTapRecognizer.delaysTouchesEnded = NO;
+    self.singleFingerTapRecognizer.delegate = self;
+    [self.view addGestureRecognizer:self.singleFingerTapRecognizer];
+    
+    self.doubleFingerTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(twoFingerTap)];
+    self.doubleFingerTapRecognizer.numberOfTouchesRequired = 2;
+    self.doubleFingerTapRecognizer.numberOfTapsRequired = 1;
+    self.doubleFingerTapRecognizer.delegate = self;
+    [self.view addGestureRecognizer:self.doubleFingerTapRecognizer];
     
     self.acceptingImages = YES;
 }
@@ -95,7 +101,38 @@
     self.audioMutationTimer = nil;
 }
 
-- (void)stopRecordingPressedDown
+- (void)singleFingerTap
+{
+    [self startRecording];
+}
+
+- (void)twoFingerTap
+{
+    [self revive];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if ([[event allTouches] count] == 1) {
+        [self stopRecording];
+    } else if ([[event allTouches] count] == 2) {
+        [self silence];
+    }
+}
+
+- (void)silence
+{
+    NSLog(@"doing silence");
+    [self.audioCapturer setNoInputAndDeleteLoops];
+}
+
+- (void)revive
+{
+    NSLog(@"doing revive");
+    [self.audioCapturer setVolumeBoostingInputWithVolume:DEFAULT_VOL_GAIN];
+}
+
+- (void)stopRecording
 {
     NSLog(@"stopping recording");
     [self.audioCapturer setNoInput];
@@ -103,12 +140,11 @@
     [self stoppedMakingLoop];
 }
 
-- (void)stopRecordingReleased
+- (void)startRecording
 {
     NSLog(@"starting recording");
     [self.audioCapturer setVolumeBoostingInputWithVolume:DEFAULT_VOL_GAIN];
     self.acceptingImages = YES;
-    [self.audioCapturer createLooper];
 }
 
 - (void)imageCaptured:(UIImage *)image
@@ -121,7 +157,7 @@
     imageLayer.opacity = [self imageAlpha];
     imageLayer.transform = [self imageTransform];
     //[self.view.layer addSublayer:imageLayer];
-    [self.view.layer insertSublayer:imageLayer below:self.stopRecordingButton.layer];
+    [self.view.layer insertSublayer:imageLayer below:self.loopMakingIndicator.layer];
     
     [self.imageLayers addObject:imageLayer];
     
@@ -132,7 +168,7 @@
     }
     
     double val = ((double) arc4random() / ARC4RANDOM_MAX);
-    if (val > 0.7) {
+    if (val > 0.5) {
         [self.imageCapturer swapCameras];
     }
 }
