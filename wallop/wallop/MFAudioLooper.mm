@@ -10,7 +10,7 @@
 #import "Novocaine.h"
 
 #define MIN_FRAMES 25000
-#define MORE_FRAMES 66666
+#define MORE_FRAMES 99999
 
 @interface MFAudioLooper ()
 

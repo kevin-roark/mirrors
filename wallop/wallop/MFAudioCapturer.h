@@ -8,7 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+#define DEFAULT_VOL_GAIN 1.1f
+
+@protocol MFAudioCapturerDelegate <NSObject>
+
+- (void)startedMakingLoop;
+- (void)stoppedMakingLoop;
+
+@end
+
 @interface MFAudioCapturer : NSObject
+
+@property (nonatomic, weak) id<MFAudioCapturerDelegate> delegate;
 
 - (void)start;
 - (void)stop;

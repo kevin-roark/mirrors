@@ -57,7 +57,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     self.captureMode = MFFeedback;
     self.currentlyRecording = YES;
     
-    [self setVolumeBoostingInputWithVolume:1.4f];
+    [self setVolumeBoostingInputWithVolume:DEFAULT_VOL_GAIN];
     [self setNoOutput];
 }
 
@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
         
         // set 1 second delay
         MAKE_A_WEAKSELF;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             NSLog(@"beginning playback");
             [weakSelf setPlayFromBufferOutput];
             [weakSelf beginLoopCapture];
@@ -111,6 +111,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 {
     // set 3 second delay
     MAKE_A_WEAKSELF;
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [weakSelf createLooper];
         [weakSelf beginLoopCapture];
@@ -120,6 +121,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 - (void)createLooper
 {
     NSLog(@"creating looper");
+    [self.delegate startedMakingLoop];
     
     if (self.currentlyRecording) {
         MFAudioLooper *currentLooper = [MFAudioLooper audioLooperWithRandomFramesWithChannels:self.audioManager.numInputChannels];
@@ -181,6 +183,9 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     for (MFAudioLooper *looper in self.loopers) {
         if (!looper.readyToPlay) {
             [looper addAudio:data numFrames:numFrames];
+            if (looper.readyToPlay) {
+                [self.delegate stoppedMakingLoop];
+            }
         }
     }
 }

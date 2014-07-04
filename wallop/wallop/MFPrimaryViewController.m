@@ -13,7 +13,7 @@
 #define ARC4RANDOM_MAX 0x100000000
 #define ACTIVE_IMAGES 25
 
-@interface MFPrimaryViewController ()<MFImageCapturerDelegate>
+@interface MFPrimaryViewController ()<MFImageCapturerDelegate, MFAudioCapturerDelegate>
 
 @property (nonatomic, strong) MFImageCapturer *imageCapturer;
 @property (nonatomic, strong) NSMutableArray *imageLayers;
@@ -23,6 +23,8 @@
 @property (nonatomic, strong) NSTimer *audioMutationTimer;
 
 @property (nonatomic, strong) UIButton *stopRecordingButton;
+
+@property (nonatomic, strong) UIView *loopMakingIndicator;
 
 @end
 
@@ -37,6 +39,17 @@
     self.imageLayers = [NSMutableArray new];
     
     self.audioCapturer = [MFAudioCapturer new];
+    self.audioCapturer.delegate = self;
+    
+    CGFloat loopSize = 60;
+    CGFloat padding = 20;
+    self.loopMakingIndicator = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - loopSize - padding, padding, loopSize, loopSize)];
+    self.loopMakingIndicator.backgroundColor = [UIColor clearColor];
+    self.loopMakingIndicator.layer.cornerRadius = loopSize / 2.0f;
+    self.loopMakingIndicator.layer.borderColor = [UIColor redColor].CGColor;
+    self.loopMakingIndicator.layer.borderWidth = 10.0f;
+    self.loopMakingIndicator.hidden = YES;
+    [self.view addSubview:self.loopMakingIndicator];
     
     self.stopRecordingButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.stopRecordingButton.backgroundColor = [UIColor clearColor];
@@ -92,7 +105,7 @@
 - (void)stopRecordingReleased
 {
     NSLog(@"starting recording");
-    [self.audioCapturer setVolumeBoostingInputWithVolume:1.4f];
+    [self.audioCapturer setVolumeBoostingInputWithVolume:DEFAULT_VOL_GAIN];
     self.acceptingImages = YES;
 }
 
@@ -144,6 +157,18 @@
     NSInteger degrees = (arc4random() % (360));
     CGFloat radians = degrees / 180.0f * M_PI;
     return CATransform3DMakeAffineTransform(CGAffineTransformMakeRotation(radians));
+}
+
+#pragma -> MFAudioCapturerDelegate
+
+- (void)startedMakingLoop
+{
+    self.loopMakingIndicator.hidden = NO;
+}
+
+- (void)stoppedMakingLoop
+{
+    self.loopMakingIndicator.hidden = YES;
 }
 
 @end
