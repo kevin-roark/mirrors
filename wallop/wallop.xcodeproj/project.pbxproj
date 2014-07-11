@@ -31,6 +31,7 @@
 		FBC2C75B196111A000E8436B /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C75A196111A000E8436B /* CoreAudio.framework */; };
 		FBC2C75D196111AB00E8436B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC2C75C196111AB00E8436B /* AudioToolbox.framework */; };
 		FBC2C75F1961269F00E8436B /* photoShutter2.caf in Resources */ = {isa = PBXBuildFile; fileRef = FBC2C75E1961269F00E8436B /* photoShutter2.caf */; };
+		FBEBB9351970A007004313D9 /* MFImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = FBEBB9341970A007004313D9 /* MFImageProcessor.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +81,8 @@
 		FBC2C75A196111A000E8436B /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		FBC2C75C196111AB00E8436B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		FBC2C75E1961269F00E8436B /* photoShutter2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = photoShutter2.caf; sourceTree = "<group>"; };
+		FBEBB9331970A007004313D9 /* MFImageProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MFImageProcessor.h; sourceTree = "<group>"; };
+		FBEBB9341970A007004313D9 /* MFImageProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MFImageProcessor.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +160,8 @@
 				FBC2C749196109BC00E8436B /* MFAudioCapturer.mm */,
 				FB9A7F6D19650C7E003282B3 /* MFAudioLooper.h */,
 				FB9A7F6E19650C7E003282B3 /* MFAudioLooper.mm */,
+				FBEBB9331970A007004313D9 /* MFImageProcessor.h */,
+				FBEBB9341970A007004313D9 /* MFImageProcessor.m */,
 				FBC2C7251960C4AF00E8436B /* Images.xcassets */,
 				FBC2C71A1960C4AF00E8436B /* Supporting Files */,
 			);
@@ -311,6 +316,7 @@
 				FBC2C74A196109BC00E8436B /* MFAudioCapturer.mm in Sources */,
 				FBC2C7471960C9C000E8436B /* MFImageCapturer.m in Sources */,
 				FBC2C75719610D8E00E8436B /* RingBuffer.mm in Sources */,
+				FBEBB9351970A007004313D9 /* MFImageProcessor.m in Sources */,
 				FB9A7F6F19650C7E003282B3 /* MFAudioLooper.mm in Sources */,
 				FBC2C7201960C4AF00E8436B /* main.m in Sources */,
 				FBC2C75419610D8E00E8436B /* AudioFileReader.mm in Sources */,

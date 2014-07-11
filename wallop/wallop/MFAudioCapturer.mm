@@ -90,7 +90,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             NSLog(@"beginning playback");
             [weakSelf setPlayFromBufferOutput];
-            [weakSelf beginLoopCapture];
+            [weakSelf beginLoopCaptureWithMaxDelay:2];
         });
     }
 }
@@ -107,11 +107,11 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     return self.audioManager.playing;
 }
 
-- (void)beginLoopCapture
+- (void)beginLoopCaptureWithMaxDelay:(NSInteger)delayInSeconds
 {
     // set 1 -> 2second delay
     MAKE_A_WEAKSELF;
-    CGFloat seconds = (arc4random() % 2) + 1.25;
+    CGFloat seconds = (arc4random() % delayInSeconds) + 1.25;
     NSLog(@"loop capture time %f", seconds);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, seconds * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [weakSelf createLooper];
@@ -120,7 +120,6 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 
 - (void)createLooper
 {
-    NSLog(@"creating looper");
     [self.delegate startedMakingLoop];
     
     if (self.currentlyRecording) {
@@ -145,7 +144,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 - (void)filledLoooper:(MFAudioLooper *)looper
 {
     [self.delegate stoppedMakingLoop];
-    [self beginLoopCapture];
+    [self beginLoopCaptureWithMaxDelay:6];
 }
 
 #pragma mark -> Input

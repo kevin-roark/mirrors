@@ -9,6 +9,7 @@
 #import "MFPrimaryViewController.h"
 #import "MFImageCapturer.h"
 #import "MFAudioCapturer.h"
+#import "MFImageProcessor.h"
 
 #define ARC4RANDOM_MAX 0x100000000
 #define ACTIVE_IMAGES 25
@@ -151,12 +152,13 @@
 {
     if (!image || !self.acceptingImages) return;
     
+    image = [self processImage:image];
+    
     CALayer *imageLayer = [CALayer layer];
     imageLayer.contents = (id) image.CGImage;
     imageLayer.frame = [self imageFrameForImage:image];
     imageLayer.opacity = [self imageAlpha];
     imageLayer.transform = [self imageTransform];
-    //[self.view.layer addSublayer:imageLayer];
     [self.view.layer insertSublayer:imageLayer below:self.loopMakingIndicator.layer];
     
     [self.imageLayers addObject:imageLayer];
@@ -195,6 +197,23 @@
     NSInteger degrees = (arc4random() % (360));
     CGFloat radians = degrees / 180.0f * M_PI;
     return CATransform3DMakeAffineTransform(CGAffineTransformMakeRotation(radians));
+}
+
+- (UIImage *)processImage:(UIImage *)image
+{
+    double val;
+    
+    val = ((double) arc4random() / ARC4RANDOM_MAX);
+    if (val > 0.67) {
+        image = [MFImageProcessor imageWithRandomTint:image];
+    }
+    
+    val = ((double) arc4random() / ARC4RANDOM_MAX);
+    if (val > 0.57) {
+        image = [MFImageProcessor imageWithRandomBrightness:image];
+    }
+    
+    return image;
 }
 
 #pragma -> MFAudioCapturerDelegate
