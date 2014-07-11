@@ -25,8 +25,11 @@
 
 @property (nonatomic, strong) UIView *loopMakingIndicator;
 
-@property (nonatomic, strong) UITapGestureRecognizer *singleFingerTapRecognizer;
-@property (nonatomic, strong) UITapGestureRecognizer *doubleFingerTapRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *singleFingerSingleTapRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *doubleFingerSingleTapRecognizer;
+
+@property (nonatomic) BOOL recording;
+@property (nonatomic) BOOL zombieMode;
 
 @end
 
@@ -53,19 +56,19 @@
     self.loopMakingIndicator.layer.opacity = 0.0f;
     [self.view addSubview:self.loopMakingIndicator];
     
-    self.singleFingerTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleFingerTap)];
-    self.singleFingerTapRecognizer.numberOfTouchesRequired = 1;
-    self.singleFingerTapRecognizer.numberOfTapsRequired = 1;
-    self.singleFingerTapRecognizer.delaysTouchesBegan = NO;
-    self.singleFingerTapRecognizer.delaysTouchesEnded = NO;
-    self.singleFingerTapRecognizer.delegate = self;
-    [self.view addGestureRecognizer:self.singleFingerTapRecognizer];
+    self.singleFingerSingleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleFingerSingleTap)];
+    self.singleFingerSingleTapRecognizer.numberOfTouchesRequired = 1;
+    self.singleFingerSingleTapRecognizer.numberOfTapsRequired = 1;
+    self.singleFingerSingleTapRecognizer.delaysTouchesBegan = NO;
+    self.singleFingerSingleTapRecognizer.delaysTouchesEnded = NO;
+    self.singleFingerSingleTapRecognizer.delegate = self;
+    [self.view addGestureRecognizer:self.singleFingerSingleTapRecognizer];
     
-    self.doubleFingerTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(twoFingerTap)];
-    self.doubleFingerTapRecognizer.numberOfTouchesRequired = 2;
-    self.doubleFingerTapRecognizer.numberOfTapsRequired = 1;
-    self.doubleFingerTapRecognizer.delegate = self;
-    [self.view addGestureRecognizer:self.doubleFingerTapRecognizer];
+    self.doubleFingerSingleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(twoFingerSingleTap)];
+    self.doubleFingerSingleTapRecognizer.numberOfTouchesRequired = 2;
+    self.doubleFingerSingleTapRecognizer.numberOfTapsRequired = 1;
+    self.doubleFingerSingleTapRecognizer.delegate = self;
+    [self.view addGestureRecognizer:self.doubleFingerSingleTapRecognizer];
     
     self.acceptingImages = YES;
 }
@@ -83,6 +86,9 @@
     
     [self.audioCapturer start];
     //self.audioMutationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self.audioCapturer selector:@selector(mutateAudioModes) userInfo:nil repeats:YES];
+    
+    self.recording = YES;
+    self.zombieMode = NO;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -91,10 +97,7 @@
     
     [self.imageCapturer stop];
     
-    for (CALayer *layer in self.imageLayers) {
-        [layer removeFromSuperlayer];
-    }
-    self.imageLayers = nil;
+    [self removeImages];
     
     [self.audioCapturer stop];
     
@@ -102,35 +105,47 @@
     self.audioMutationTimer = nil;
 }
 
-- (void)singleFingerTap
+- (void)singleFingerSingleTap
 {
-    [self startRecording];
-}
-
-- (void)twoFingerTap
-{
-    [self revive];
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    if ([[event allTouches] count] == 1) {
+    if (self.recording) {
         [self stopRecording];
-    } else if ([[event allTouches] count] == 2) {
+    } else {
+        [self startRecordingWithDelay:0.2];
+    }
+    
+    self.recording = !self.recording;
+}
+
+- (void)twoFingerSingleTap
+{
+    if (self.zombieMode) {
+        [self revive];
+    } else {
         [self silence];
     }
+    
+    self.zombieMode = !self.zombieMode;
 }
 
 - (void)silence
 {
     NSLog(@"doing silence");
     [self.audioCapturer setNoInputAndDeleteLoops];
+    self.acceptingImages = NO;
 }
 
 - (void)revive
 {
     NSLog(@"doing revive");
-    [self.audioCapturer setVolumeBoostingInputWithVolume:DEFAULT_VOL_GAIN];
+    [self startRecordingWithDelay:0.15f];
+}
+
+- (void)removeImages
+{
+    for (CALayer *layer in self.imageLayers) {
+        [layer removeFromSuperlayer];
+    }
+    [self.imageLayers removeAllObjects];
 }
 
 - (void)stopRecording
@@ -141,10 +156,18 @@
     [self stoppedMakingLoop];
 }
 
-- (void)startRecording
+- (void)startRecordingWithDelay:(CGFloat)delayInSeconds;
 {
     NSLog(@"starting recording");
+    [self.audioCapturer setNoOutput];
+    
     [self.audioCapturer setVolumeBoostingInputWithVolume:DEFAULT_VOL_GAIN];
+    
+    dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * delayInSeconds);
+    dispatch_after(delay, dispatch_get_main_queue(), ^(void){
+        [self.audioCapturer setPlayFromBufferOutput];
+    });
+    
     self.acceptingImages = YES;
 }
 

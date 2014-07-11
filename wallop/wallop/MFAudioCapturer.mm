@@ -111,7 +111,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 {
     // set 1 -> 2second delay
     MAKE_A_WEAKSELF;
-    CGFloat seconds = (arc4random() % delayInSeconds) + 1.25;
+    CGFloat seconds = (arc4random() % delayInSeconds) + 1;
     NSLog(@"loop capture time %f", seconds);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, seconds * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [weakSelf createLooper];
@@ -172,6 +172,8 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     for (MFAudioLooper *looper in self.loopers) {
         looper.loopsDeserved = 5;
     }
+    
+    [self beginLoopCaptureWithMaxDelay:5];
     
     self.currentlyRecording = YES;
 }
