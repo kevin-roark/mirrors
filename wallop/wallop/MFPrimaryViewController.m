@@ -14,6 +14,8 @@
 #define ARC4RANDOM_MAX 0x100000000
 #define ACTIVE_IMAGES 25
 
+#define DEFAULT_DELAY 0.2f
+
 @interface MFPrimaryViewController ()<MFImageCapturerDelegate, MFAudioCapturerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) MFImageCapturer *imageCapturer;
@@ -28,6 +30,11 @@
 
 @property (nonatomic, strong) UITapGestureRecognizer *singleFingerSingleTapRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleFingerSingleTapRecognizer;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
+
+@property (nonatomic) CGFloat delayAmount;
+@property (nonatomic, strong) UILabel *delayAmountLabel;
+@property (nonatomic) BOOL activeDelayPanning;
 
 @property (nonatomic) BOOL recording;
 @property (nonatomic) BOOL zombieMode;
@@ -63,6 +70,14 @@
     self.loopModeIndicator.layer.opacity = 0.0f;
     [self.view addSubview:self.loopModeIndicator];
     
+    self.delayAmountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 62, self.view.frame.size.width, 52)];
+    self.delayAmountLabel.text = @"DELAY";
+    self.delayAmountLabel.textColor = [UIColor colorWithRed:0.2 green:1.0 blue:0.2 alpha:1.0f];
+    self.delayAmountLabel.font = [UIFont fontWithName:@"Courier New" size:48.0f];
+    self.delayAmountLabel.layer.opacity = 0.0f;
+    self.delayAmountLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:self.delayAmountLabel];
+    
     self.singleFingerSingleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleFingerSingleTap)];
     self.singleFingerSingleTapRecognizer.numberOfTouchesRequired = 1;
     self.singleFingerSingleTapRecognizer.numberOfTapsRequired = 1;
@@ -76,6 +91,12 @@
     self.doubleFingerSingleTapRecognizer.numberOfTapsRequired = 1;
     self.doubleFingerSingleTapRecognizer.delegate = self;
     [self.view addGestureRecognizer:self.doubleFingerSingleTapRecognizer];
+    
+    self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(viewPanned)];
+    self.panGestureRecognizer.maximumNumberOfTouches = 1;
+    self.panGestureRecognizer.minimumNumberOfTouches = 1;
+    self.panGestureRecognizer.delegate = self;
+    [self.view addGestureRecognizer:self.panGestureRecognizer];
     
     self.acceptingImages = YES;
 }
@@ -96,6 +117,10 @@
     
     self.recording = YES;
     self.zombieMode = NO;
+    self.activeDelayPanning = NO;
+    [self hideDelayControls];
+    
+    self.delayAmount = DEFAULT_DELAY;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -117,9 +142,11 @@
     if (self.recording) {
         [self stopRecording];
         [self showLoopModeIndicator];
+        [self showDelayControls];
     } else {
         [self startRecordingWithDelay:0.2];
         [self hideLoopModeIndicator];
+        [self hideDelayControls];
     }
     
     self.recording = !self.recording;
@@ -129,8 +156,10 @@
 {
     if (self.zombieMode) {
         [self revive];
+        [self hideDelayControls];
     } else {
         [self silence];
+        [self showDelayControls];
     }
     
     self.zombieMode = !self.zombieMode;
@@ -146,7 +175,7 @@
 - (void)revive
 {
     NSLog(@"doing revive");
-    [self startRecordingWithDelay:0.15f];
+    [self startRecordingWithDelay:self.delayAmount];
 }
 
 - (void)removeImages
@@ -289,6 +318,36 @@
     self.loopModeIndicator.layer.opacity = 0.0f;
     
     [self.loopModeIndicator.layer removeAnimationForKey:@"Spin"];
+}
+
+- (void)showDelayControls
+{
+    self.delayAmountLabel.layer.opacity = 1.0f;
+    self.activeDelayPanning = YES;
+}
+
+- (void)hideDelayControls
+{
+    self.delayAmountLabel.layer.opacity = 0.0f;
+    self.activeDelayPanning = NO;
+}
+
+- (void)updateDelayWithPercentage:(CGFloat)percentage
+{
+    CGAffineTransform transform = CGAffineTransformMakeScale((percentage - 0.1) * 2.5 + 0.1, 1.0);
+    self.delayAmountLabel.transform = transform;
+    
+    self.delayAmount = DEFAULT_DELAY * 6 * percentage + 0.05f;
+}
+
+- (void)viewPanned
+{
+    CGPoint pointInView = [self.panGestureRecognizer locationInView:self.view];
+    CGFloat xTrans = pointInView.x / self.view.frame.size.width;
+    
+    if (self.activeDelayPanning) {
+        [self updateDelayWithPercentage:xTrans];
+    }
 }
 
 @end
