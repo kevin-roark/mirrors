@@ -144,7 +144,7 @@
         [self showLoopModeIndicator];
         [self showDelayControls];
     } else {
-        [self startRecordingWithDelay:0.2];
+        [self startRecordingWithDelay:self.delayAmount];
         [self hideLoopModeIndicator];
         [self hideDelayControls];
     }
