@@ -155,7 +155,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
     self.currentlyRecording = NO;
     
     for (MFAudioLooper *looper in self.loopers) {
-        looper.loopsDeserved = 10000;
+        looper.currentlyCountingLoops = NO;
     }
 }
 
@@ -170,7 +170,7 @@ typedef NS_ENUM(NSUInteger, MFAudioCaptureMode) {
 - (void)someInputSet
 {
     for (MFAudioLooper *looper in self.loopers) {
-        looper.loopsDeserved = 5;
+        looper.currentlyCountingLoops = YES;
     }
     
     [self beginLoopCaptureWithMaxDelay:5];

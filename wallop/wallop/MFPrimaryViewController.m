@@ -24,6 +24,7 @@
 @property (nonatomic, strong) NSTimer *audioMutationTimer;
 
 @property (nonatomic, strong) UIView *loopMakingIndicator;
+@property (nonatomic, strong) UIView *loopModeIndicator;
 
 @property (nonatomic, strong) UITapGestureRecognizer *singleFingerSingleTapRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleFingerSingleTapRecognizer;
@@ -48,6 +49,7 @@
 
     CGFloat loopSize = 40;
     CGFloat padding = 15;
+    
     self.loopMakingIndicator = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - loopSize - padding, padding, loopSize, loopSize)];
     self.loopMakingIndicator.backgroundColor = [UIColor clearColor];
     self.loopMakingIndicator.layer.cornerRadius = loopSize / 2.0f;
@@ -55,6 +57,11 @@
     self.loopMakingIndicator.layer.borderWidth = 7.0f;
     self.loopMakingIndicator.layer.opacity = 0.0f;
     [self.view addSubview:self.loopMakingIndicator];
+    
+    self.loopModeIndicator = [[UIView alloc] initWithFrame:CGRectMake(padding, padding, loopSize, loopSize)];
+    self.loopModeIndicator.backgroundColor = [UIColor colorWithRed:0.8 green:0.0 blue:1.0 alpha:1.0f];
+    self.loopModeIndicator.layer.opacity = 0.0f;
+    [self.view addSubview:self.loopModeIndicator];
     
     self.singleFingerSingleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleFingerSingleTap)];
     self.singleFingerSingleTapRecognizer.numberOfTouchesRequired = 1;
@@ -109,8 +116,10 @@
 {
     if (self.recording) {
         [self stopRecording];
+        [self showLoopModeIndicator];
     } else {
         [self startRecordingWithDelay:0.2];
+        [self hideLoopModeIndicator];
     }
     
     self.recording = !self.recording;
@@ -150,7 +159,6 @@
 
 - (void)stopRecording
 {
-    NSLog(@"stopping recording");
     [self.audioCapturer setNoInput];
     self.acceptingImages = NO;
     [self stoppedMakingLoop];
@@ -158,7 +166,6 @@
 
 - (void)startRecordingWithDelay:(CGFloat)delayInSeconds;
 {
-    NSLog(@"starting recording");
     [self.audioCapturer setNoOutput];
     
     [self.audioCapturer setVolumeBoostingInputWithVolume:DEFAULT_VOL_GAIN];
@@ -243,6 +250,11 @@
 
 - (void)startedMakingLoop
 {
+    if (!self.recording || self.zombieMode) {
+        [self stoppedMakingLoop];
+        return;
+    }
+    
     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
         [UIView animateWithDuration:0.4f animations:^{
             self.loopMakingIndicator.layer.opacity = 1.0f;
@@ -257,6 +269,26 @@
             self.loopMakingIndicator.layer.opacity = 0.0f;
         }];
     }];
+}
+
+- (void)showLoopModeIndicator
+{
+    self.loopModeIndicator.layer.opacity = 1.0f;
+    
+    CABasicAnimation *rotation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    rotation.fromValue = [NSNumber numberWithFloat:0];
+    rotation.toValue = [NSNumber numberWithFloat:(2*M_PI)];
+    rotation.duration = 1.4;
+    rotation.repeatCount = HUGE_VALF; // Repeat forever. Can be a finite number.
+    
+    [self.loopModeIndicator.layer addAnimation:rotation forKey:@"Spin"];
+}
+
+- (void)hideLoopModeIndicator
+{
+    self.loopModeIndicator.layer.opacity = 0.0f;
+    
+    [self.loopModeIndicator.layer removeAnimationForKey:@"Spin"];
 }
 
 @end

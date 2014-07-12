@@ -33,6 +33,7 @@
         _readyToPlay = NO;
         _timesLooped = 0;
         _currentBufferFrame = 0;
+        _currentlyCountingLoops = YES;
     }
     return self;
 }
@@ -68,7 +69,10 @@
 
     self.currentBufferFrame += numFrames;
     if (self.currentBufferFrame > self.numFrames) {
-        self.timesLooped += 1;
+        if (self.currentlyCountingLoops) {
+            self.timesLooped += 1;
+        }
+        
         self.currentBufferFrame = self.currentBufferFrame - self.numFrames;
     }
 }
