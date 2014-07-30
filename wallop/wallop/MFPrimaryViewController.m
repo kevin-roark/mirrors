@@ -34,6 +34,10 @@
 
 @property (nonatomic) CGFloat delayAmount;
 @property (nonatomic, strong) UILabel *delayAmountLabel;
+
+@property (nonatomic) CGFloat volumeBoost;
+@property (nonatomic, strong) UILabel *volumeAmountLabel;
+
 @property (nonatomic) BOOL activeDelayPanning;
 
 @property (nonatomic) BOOL recording;
@@ -46,6 +50,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.delayAmount = DEFAULT_DELAY;
+    self.volumeBoost = DEFAULT_VOL_GAIN;
     
     self.imageCapturer = [MFImageCapturer new];
     self.imageCapturer.delegate = self;
@@ -77,6 +84,16 @@
     self.delayAmountLabel.layer.opacity = 0.0f;
     self.delayAmountLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.delayAmountLabel];
+    
+    self.volumeAmountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40, 0, 25, self.view.frame.size.height)];
+    self.volumeAmountLabel.text = @"VOLUME";
+    self.volumeAmountLabel.textAlignment = NSTextAlignmentCenter;
+    self.volumeAmountLabel.numberOfLines = 0;
+    self.volumeAmountLabel.lineBreakMode = NSLineBreakByCharWrapping;
+    self.volumeAmountLabel.font = [UIFont fontWithName:@"Courier New" size:48.0f];
+    self.volumeAmountLabel.textColor = [UIColor colorWithRed:1.0f green:0.2f blue:0.5f alpha:1.0f];
+    self.volumeAmountLabel.layer.opacity = 0.0f;
+    [self.view addSubview:self.volumeAmountLabel];
     
     self.singleFingerSingleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleFingerSingleTap)];
     self.singleFingerSingleTapRecognizer.numberOfTouchesRequired = 1;
@@ -110,8 +127,12 @@
 {
     [super viewWillAppear:animated];
     
+    self.delayAmount = DEFAULT_DELAY;
+    self.volumeBoost = DEFAULT_VOL_GAIN;
+    
     [self.imageCapturer start];
     
+    [self.audioCapturer setVolumeBoostingInputWithVolume:self.volumeBoost];
     [self.audioCapturer start];
     //self.audioMutationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self.audioCapturer selector:@selector(mutateAudioModes) userInfo:nil repeats:YES];
     
@@ -119,8 +140,6 @@
     self.zombieMode = NO;
     self.activeDelayPanning = NO;
     [self hideDelayControls];
-    
-    self.delayAmount = DEFAULT_DELAY;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -139,6 +158,8 @@
 
 - (void)singleFingerSingleTap
 {
+    if (self.zombieMode) return;
+    
     if (self.recording) {
         [self stopRecording];
         [self showLoopModeIndicator];
@@ -197,7 +218,7 @@
 {
     [self.audioCapturer setNoOutput];
     
-    [self.audioCapturer setVolumeBoostingInputWithVolume:DEFAULT_VOL_GAIN];
+    [self.audioCapturer setVolumeBoostingInputWithVolume:self.volumeBoost];
     
     dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * delayInSeconds);
     dispatch_after(delay, dispatch_get_main_queue(), ^(void){
@@ -323,12 +344,14 @@
 - (void)showDelayControls
 {
     self.delayAmountLabel.layer.opacity = 1.0f;
+    self.volumeAmountLabel.layer.opacity = 1.0f;
     self.activeDelayPanning = YES;
 }
 
 - (void)hideDelayControls
 {
     self.delayAmountLabel.layer.opacity = 0.0f;
+    self.volumeAmountLabel.layer.opacity = 0.0f;
     self.activeDelayPanning = NO;
 }
 
@@ -340,10 +363,21 @@
     self.delayAmount = DEFAULT_DELAY * 6 * percentage + 0.05f;
 }
 
+- (void)updateVolumeWithPercentage:(CGFloat)percentage
+{
+    CGAffineTransform transform = CGAffineTransformMakeScale(1.0, (percentage - 0.1) * 2.0 + 0.1);
+    self.volumeAmountLabel.transform = transform;
+    
+    self.volumeBoost = MAX(DEFAULT_VOL_GAIN * 2 * percentage, 0.1f);
+    NSLog(@"VOL BOOST %f", self.volumeBoost);
+}
+
 - (void)viewPanned
 {
     CGPoint pointInView = [self.panGestureRecognizer locationInView:self.view];
+    
     CGFloat xTrans = pointInView.x / self.view.frame.size.width;
+    CGFloat yTrans = 1.0 - (pointInView.y / self.view.frame.size.height);
     
     if (!self.activeDelayPanning && !self.recording) {
         [self showDelayControls];
@@ -351,6 +385,8 @@
     
     if (self.activeDelayPanning) {
         [self updateDelayWithPercentage:xTrans];
+        
+        [self updateVolumeWithPercentage:yTrans];
     }
 }
 
