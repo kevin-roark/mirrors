@@ -72,7 +72,7 @@
     
     self.delayAmountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 62, self.view.frame.size.width, 52)];
     self.delayAmountLabel.text = @"DELAY";
-    self.delayAmountLabel.textColor = [UIColor colorWithRed:0.2 green:1.0 blue:0.2 alpha:1.0f];
+    self.delayAmountLabel.textColor = [UIColor colorWithRed:0.4 green:1.0 blue:0.2 alpha:1.0f];
     self.delayAmountLabel.font = [UIFont fontWithName:@"Courier New" size:48.0f];
     self.delayAmountLabel.layer.opacity = 0.0f;
     self.delayAmountLabel.textAlignment = NSTextAlignmentCenter;
@@ -142,7 +142,6 @@
     if (self.recording) {
         [self stopRecording];
         [self showLoopModeIndicator];
-        [self showDelayControls];
     } else {
         [self startRecordingWithDelay:self.delayAmount];
         [self hideLoopModeIndicator];
@@ -157,6 +156,7 @@
     if (self.zombieMode) {
         [self revive];
         [self hideDelayControls];
+        [self hideLoopModeIndicator];
     } else {
         [self silence];
         [self showDelayControls];
@@ -344,6 +344,10 @@
 {
     CGPoint pointInView = [self.panGestureRecognizer locationInView:self.view];
     CGFloat xTrans = pointInView.x / self.view.frame.size.width;
+    
+    if (!self.activeDelayPanning && !self.recording) {
+        [self showDelayControls];
+    }
     
     if (self.activeDelayPanning) {
         [self updateDelayWithPercentage:xTrans];
